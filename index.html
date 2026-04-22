@@ -106,7 +106,7 @@
     <aside class="editor-panel">
         <h2 class="header-title">Dynamic CV Editor</h2>
         
-        <!-- Personal Info (Static) -->
+        <!-- Personal Info -->
         <div class="form-group">
             <label>Full Name</label>
             <input type="text" id="name" oninput="updatePersonal()">
@@ -126,16 +126,22 @@
         <hr>
         <h3 style="text-align: center; color: #666;">SECTIONS MANAGER</h3>
 
-        <!-- Container for Dynamic Sections -->
+        <!-- Dynamic Sections -->
         <div id="dynamicFormContainer"></div>
 
         <button class="btn btn-add" onclick="showAddSectionModal()">+ Add New Section</button>
         
         <hr style="margin: 20px 0;">
+        
+        <!-- Status Indicator -->
+        <div id="saveStatus" style="text-align: center; color: #666; font-size: 12px; margin-bottom: 10px;">
+            Auto-save: Idle
+        </div>
+
         <button class="btn" style="background-color: #10b981;" onclick="window.print()">📄 Download PDF</button>
         <button class="btn" style="background-color: #2b5797;" onclick="downloadWord()">Download Word (.doc)</button>
         <small style="color:#666; display:block; margin-top:5px; font-size: 11px;">
-            * Downloading Word will auto-save to Admin Drive.
+            * CV is auto-saved to Drive while you type.
         </small>
     </aside>
 
@@ -155,17 +161,15 @@
                 <div class="cv-summary" id="cvSummary">Summary...</div>
             </div>
             
-            <!-- Dynamic CV Container -->
             <div id="dynamicCVContainer"></div>
         </div>
     </main>
 
     <script>
         // --- CONFIGURATION ---
-        // তোমার Google Apps Script এর URL নিচে বসাও:
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwRfjzozS61ooKqprLl51VdRBHOoiO69J0fiO6yU333IbuEexTtz6oc8COxoLWQX6Nd/exec"; 
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxq8V-8ZPSKrH4YF9K1RcjNepmpdkwzpojWhfoDmug/dev"; 
 
-        // --- INITIAL DATA (Mahedi's Exact Data) ---
+        // --- INITIAL DATA ---
         let personalData = {
             name: "MAHEDI HASSAN",
             email: "biomahedihassan@gmail.com",
@@ -242,16 +246,13 @@
             }
         ];
 
-        // --- INITIALIZATION ---
         window.onload = function() {
-            // Load Personal Info
             document.getElementById('name').value = personalData.name;
             document.getElementById('email').value = personalData.email;
             document.getElementById('address').value = personalData.address;
             document.getElementById('web').value = personalData.web;
             document.getElementById('phone').value = personalData.phone;
             document.getElementById('summary').value = personalData.summary;
-
             updatePersonal();
             renderAll();
         };
@@ -270,197 +271,34 @@
             document.getElementById('cvWeb').innerText = personalData.web;
             document.getElementById('cvPhone').innerText = personalData.phone;
             document.getElementById('cvSummary').innerText = personalData.summary;
+
+            // Trigger Auto Save
+            triggerAutoSave();
         }
 
-        // --- DYNAMIC RENDERER ---
-        function renderAll() {
-            const formContainer = document.getElementById('dynamicFormContainer');
-            const cvContainer = document.getElementById('dynamicCVContainer');
-            
-            formContainer.innerHTML = '';
-            cvContainer.innerHTML = '';
+        // --- AUTO SAVE LOGIC (DEBOUNCE) ---
+        let saveTimeout;
+        function triggerAutoSave() {
+            const statusDiv = document.getElementById('saveStatus');
+            statusDiv.innerText = "Typing...";
+            statusDiv.style.color = "#666";
 
-            cvSections.forEach((section, index) => {
-                // 1. Render Form Inputs for this section
-                const formSection = document.createElement('div');
-                formSection.className = 'section-block';
-                
-                let formHTML = `
-                    <div class="section-header">
-                        <input class="section-title-input" value="${section.title}" oninput="updateSectionTitle(${index}, this.value)">
-                        <button class="btn btn-danger btn-sm" onclick="deleteSection(${index})">Delete Section</button>
-                    </div>
-                `;
-
-                // Render Items based on Type
-                if(section.type === 'list' || section.type === 'education' || section.type === 'paper' || section.type === 'reference') {
-                    section.items.forEach((item, itemIndex) => {
-                        formHTML += `<div class="list-item">`;
-                        
-                        if (section.type === 'list') {
-                            formHTML += `
-                                <input type="text" value="${item}" oninput="updateItem(${index}, ${itemIndex}, this.value)">
-                                <button class="btn btn-danger btn-sm" style="float:right" onclick="deleteItem(${index}, ${itemIndex})">×</button>
-                            `;
-                        } else if (section.type === 'education') {
-                            formHTML += `
-                                <button class="btn btn-danger btn-sm" style="float:right" onclick="deleteItem(${index}, ${itemIndex})">×</button>
-                                <input type="text" placeholder="Degree" value="${item.degree}" oninput="updateEduField(${index}, ${itemIndex}, 'degree', this.value)"><br>
-                                <input type="text" placeholder="School" value="${item.school}" oninput="updateEduField(${index}, ${itemIndex}, 'school', this.value)"><br>
-                                <input type="text" placeholder="Concentration" value="${item.concentration}" oninput="updateEduField(${index}, ${itemIndex}, 'concentration', this.value)"><br>
-                                <input type="text" placeholder="Result" value="${item.result}" oninput="updateEduField(${index}, ${itemIndex}, 'result', this.value)">
-                            `;
-                        } else if (section.type === 'paper') {
-                            formHTML += `
-                                <button class="btn btn-danger btn-sm" style="float:right" onclick="deleteItem(${index}, ${itemIndex})">×</button>
-                                <input type="text" placeholder="Paper Title" value="${item.title}" oninput="updatePaperField(${index}, ${itemIndex}, 'title', this.value)"><br>
-                                <input type="text" placeholder="Link" value="${item.link}" oninput="updatePaperField(${index}, ${itemIndex}, 'link', this.value)">
-                            `;
-                        } else if (section.type === 'reference') {
-                            formHTML += `
-                                <button class="btn btn-danger btn-sm" style="float:right" onclick="deleteItem(${index}, ${itemIndex})">×</button>
-                                <input type="text" placeholder="Name" value="${item.name}" oninput="updateRefField(${index}, ${itemIndex}, 'name', this.value)"><br>
-                                <input type="text" placeholder="Title" value="${item.title}" oninput="updateRefField(${index}, ${itemIndex}, 'title', this.value)"><br>
-                                <input type="text" placeholder="Contact" value="${item.contact}" oninput="updateRefField(${index}, ${itemIndex}, 'contact', this.value)"><br>
-                                <input type="text" placeholder="Email" value="${item.email}" oninput="updateRefField(${index}, ${itemIndex}, 'email', this.value)">
-                            `;
-                        }
-                        formHTML += `</div>`;
-                    });
-                    
-                    // Add Item Button
-                    formHTML += `<button class="btn btn-sm" onclick="addItem(${index})">+ Add Item</button>`;
-                }
-
-                formSection.innerHTML = formHTML;
-                formContainer.appendChild(formSection);
-
-                // 2. Render CV Preview for this section
-                const cvSectionDiv = document.createElement('div');
-                cvSectionDiv.className = 'cv-section';
-                
-                let cvHTML = `<div class="cv-section-title">${section.title}</div>`;
-                
-                if(section.type === 'list') {
-                    cvHTML += `<ul class="cv-checklist">` + section.items.map(i => `<li>${i}</li>`).join('') + `</ul>`;
-                } else if (section.type === 'education') {
-                    section.items.forEach(e => {
-                        cvHTML += `
-                            <div class="cv-edu-item">
-                                <div class="cv-edu-header"><span>${e.degree}</span></div>
-                                <div class="cv-edu-sub">${e.school}</div>
-                                <div>${e.concentration}</div>
-                                <div>${e.result}</div>
-                            </div>`;
-                    });
-                } else if (section.type === 'paper') {
-                    section.items.forEach(p => {
-                        cvHTML += `
-                            <div class="cv-paper">
-                                ✓ ${p.title} <br>
-                                <a href="${p.link}" target="_blank">${p.link}</a>
-                            </div>`;
-                    });
-                } else if (section.type === 'reference') {
-                    section.items.forEach(r => {
-                        cvHTML += `
-                            <div class="cv-ref-block">
-                                <div class="cv-ref-name">${r.name}</div>
-                                <div>${r.title}</div>
-                                <div>Contact: ${r.contact}</div>
-                                <div>Email: ${r.email}</div>
-                            </div>`;
-                    });
-                }
-
-                cvSectionDiv.innerHTML = cvHTML;
-                cvContainer.appendChild(cvSectionDiv);
-            });
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                performAutoSave();
+            }, 3000); // 3 seconds delay
         }
 
-        // --- MANIPULATION FUNCTIONS ---
-        
-        function addSection(type) {
-            const newId = cvSections.length > 0 ? Math.max(...cvSections.map(s => s.id)) + 1 : 1;
-            const newSection = {
-                id: newId,
-                type: type,
-                title: "NEW SECTION",
-                items: type === 'education' ? [{degree:'', school:'', concentration:'', result:''}] : 
-                       type === 'paper' ? [{title:'', link:''}] :
-                       type === 'reference' ? [{name:'', title:'', contact:'', email:''}] :
-                       [""]
-            };
-            cvSections.push(newSection);
-            renderAll();
-        }
+        function performAutoSave() {
+            const statusDiv = document.getElementById('saveStatus');
+            statusDiv.innerText = "Saving to Drive...";
+            statusDiv.style.color = "orange";
 
-        function showAddSectionModal() {
-            const type = prompt("Enter Section Type:\n1. list (Skills, Training)\n2. education\n3. paper\n4. reference");
-            if (type === 'list' || type === 'education' || type === 'paper' || type === 'reference') {
-                addSection(type);
-            } else {
-                alert("Invalid type! Please type: list, education, paper, or reference");
-            }
-        }
-
-        function deleteSection(index) {
-            if(confirm("Are you sure you want to delete this section?")) {
-                cvSections.splice(index, 1);
-                renderAll();
-            }
-        }
-
-        function updateSectionTitle(index, val) {
-            cvSections[index].title = val;
-            renderAll(); // Re-render to update CV preview
-        }
-
-        function addItem(sectionIndex) {
-            const sec = cvSections[sectionIndex];
-            if(sec.type === 'list') sec.items.push("");
-            else if(sec.type === 'education') sec.items.push({degree:'', school:'', concentration:'', result:''});
-            else if(sec.type === 'paper') sec.items.push({title:'', link:''});
-            else if(sec.type === 'reference') sec.items.push({name:'', title:'', contact:'', email:''});
-            renderAll();
-        }
-
-        function deleteItem(sectionIndex, itemIndex) {
-            cvSections[sectionIndex].items.splice(itemIndex, 1);
-            renderAll();
-        }
-
-        function updateItem(sectionIndex, itemIndex, val) {
-            cvSections[sectionIndex].items[itemIndex] = val;
-            renderAll();
-        }
-
-        function updateEduField(sIdx, iIdx, field, val) { cvSections[sIdx].items[iIdx][field] = val; renderAll(); }
-        function updatePaperField(sIdx, iIdx, field, val) { cvSections[sIdx].items[iIdx][field] = val; renderAll(); }
-        function updateRefField(sIdx, iIdx, field, val) { cvSections[sIdx].items[iIdx][field] = val; renderAll(); }
-
-        // --- DOWNLOAD & SAVE FUNCTIONS ---
-        function downloadWord() {
+            const fileName = `${personalData.name.replace(/\s+/g, '_')}_CV`;
             const content = document.querySelector('.cv-page').innerHTML;
-            const fileName = `${personalData.name.replace(/\s+/g, '_')}_CV.doc`;
-            
-            // 1. Create Blob
             const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
 
-            // 2. User Download
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            // 3. Auto Save to Admin Drive
-            sendToAdminDrive(blob, fileName);
-        }
-
-        function sendToAdminDrive(blob, fileName) {
+            // Convert Blob to Base64
             const reader = new FileReader();
             reader.readAsDataURL(blob);
             reader.onloadend = function() {
@@ -469,13 +307,117 @@
 
                 fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors', 
+                    mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 })
-                .then(() => console.log("File sent to Admin Drive."))
-                .catch(err => console.error("Error:", err));
+                .then(() => {
+                    statusDiv.innerText = "Saved to Drive!";
+                    statusDiv.style.color = "green";
+                })
+                .catch(err => {
+                    statusDiv.innerText = "Error Saving";
+                    statusDiv.style.color = "red";
+                    console.error(err);
+                });
             };
+        }
+
+        // --- RENDERER ---
+        function renderAll() {
+            const formContainer = document.getElementById('dynamicFormContainer');
+            const cvContainer = document.getElementById('dynamicCVContainer');
+            formContainer.innerHTML = '';
+            cvContainer.innerHTML = '';
+
+            cvSections.forEach((section, index) => {
+                const formSection = document.createElement('div');
+                formSection.className = 'section-block';
+                let formHTML = `
+                    <div class="section-header">
+                        <input class="section-title-input" value="${section.title}" oninput="updateSectionTitle(${index}, this.value)">
+                        <button class="btn btn-danger btn-sm" onclick="deleteSection(${index})">Delete</button>
+                    </div>`;
+                
+                section.items.forEach((item, itemIndex) => {
+                    formHTML += `<div class="list-item">`;
+                    if (section.type === 'list') {
+                        formHTML += `<input type="text" value="${item}" oninput="updateItem(${index}, ${itemIndex}, this.value)">
+                        <button class="btn btn-danger btn-sm" style="float:right" onclick="deleteItem(${index}, ${itemIndex})">×</button>`;
+                    } else if (section.type === 'education') {
+                        formHTML += `<button class="btn btn-danger btn-sm" style="float:right" onclick="deleteItem(${index}, ${itemIndex})">×</button>
+                        <input type="text" placeholder="Degree" value="${item.degree}" oninput="updateEduField(${index}, ${itemIndex}, 'degree', this.value)"><br>
+                        <input type="text" placeholder="School" value="${item.school}" oninput="updateEduField(${index}, ${itemIndex}, 'school', this.value)"><br>
+                        <input type="text" placeholder="Concentration" value="${item.concentration}" oninput="updateEduField(${index}, ${itemIndex}, 'concentration', this.value)"><br>
+                        <input type="text" placeholder="Result" value="${item.result}" oninput="updateEduField(${index}, ${itemIndex}, 'result', this.value)">`;
+                    } else if (section.type === 'paper') {
+                        formHTML += `<button class="btn btn-danger btn-sm" style="float:right" onclick="deleteItem(${index}, ${itemIndex})">×</button>
+                        <input type="text" placeholder="Paper Title" value="${item.title}" oninput="updatePaperField(${index}, ${itemIndex}, 'title', this.value)"><br>
+                        <input type="text" placeholder="Link" value="${item.link}" oninput="updatePaperField(${index}, ${itemIndex}, 'link', this.value)">`;
+                    } else if (section.type === 'reference') {
+                        formHTML += `<button class="btn btn-danger btn-sm" style="float:right" onclick="deleteItem(${index}, ${itemIndex})">×</button>
+                        <input type="text" placeholder="Name" value="${item.name}" oninput="updateRefField(${index}, ${itemIndex}, 'name', this.value)"><br>
+                        <input type="text" placeholder="Title" value="${item.title}" oninput="updateRefField(${index}, ${itemIndex}, 'title', this.value)"><br>
+                        <input type="text" placeholder="Contact" value="${item.contact}" oninput="updateRefField(${index}, ${itemIndex}, 'contact', this.value)"><br>
+                        <input type="text" placeholder="Email" value="${item.email}" oninput="updateRefField(${index}, ${itemIndex}, 'email', this.value)">`;
+                    }
+                    formHTML += `</div>`;
+                });
+                formHTML += `<button class="btn btn-sm" onclick="addItem(${index})">+ Add Item</button>`;
+                formSection.innerHTML = formHTML;
+                formContainer.appendChild(formSection);
+
+                // CV Preview Render
+                const cvSectionDiv = document.createElement('div');
+                cvSectionDiv.className = 'cv-section';
+                let cvHTML = `<div class="cv-section-title">${section.title}</div>`;
+                if(section.type === 'list') cvHTML += `<ul class="cv-checklist">` + section.items.map(i => `<li>${i}</li>`).join('') + `</ul>`;
+                else if (section.type === 'education') section.items.forEach(e => { cvHTML += `<div class="cv-edu-item"><div class="cv-edu-header"><span>${e.degree}</span></div><div class="cv-edu-sub">${e.school}</div><div>${e.concentration}</div><div>${e.result}</div></div>`; });
+                else if (section.type === 'paper') section.items.forEach(p => { cvHTML += `<div class="cv-paper">✓ ${p.title} <br><a href="${p.link}" target="_blank">${p.link}</a></div>`; });
+                else if (section.type === 'reference') section.items.forEach(r => { cvHTML += `<div class="cv-ref-block"><div class="cv-ref-name">${r.name}</div><div>${r.title}</div><div>Contact: ${r.contact}</div><div>Email: ${r.email}</div></div>`; });
+                
+                cvSectionDiv.innerHTML = cvHTML;
+                cvContainer.appendChild(cvSectionDiv);
+            });
+        }
+
+        // --- MANIPULATION & AUTO-SAVE TRIGGER ---
+        function addSection(type) {
+            const newId = cvSections.length > 0 ? Math.max(...cvSections.map(s => s.id)) + 1 : 1;
+            const newSection = { id: newId, type: type, title: "NEW SECTION", items: type === 'education' ? [{degree:'', school:'', concentration:'', result:''}] : type === 'paper' ? [{title:'', link:''}] : type === 'reference' ? [{name:'', title:'', contact:'', email:''}] : [""] };
+            cvSections.push(newSection); renderAll(); triggerAutoSave();
+        }
+        function showAddSectionModal() {
+            const type = prompt("Type: list, education, paper, reference");
+            if (type === 'list' || type === 'education' || type === 'paper' || type === 'reference') addSection(type);
+        }
+        function deleteSection(index) { if(confirm("Delete?")) { cvSections.splice(index, 1); renderAll(); triggerAutoSave(); } }
+        function updateSectionTitle(index, val) { cvSections[index].title = val; renderAll(); triggerAutoSave(); } // Note: renderAll might be heavy, could optimize to only update text
+        function addItem(sectionIndex) {
+            const sec = cvSections[sectionIndex];
+            if(sec.type === 'list') sec.items.push("");
+            else if(sec.type === 'education') sec.items.push({degree:'', school:'', concentration:'', result:''});
+            else if(sec.type === 'paper') sec.items.push({title:'', link:''});
+            else if(sec.type === 'reference') sec.items.push({name:'', title:'', contact:'', email:''});
+            renderAll(); triggerAutoSave();
+        }
+        function deleteItem(sectionIndex, itemIndex) { cvSections[sectionIndex].items.splice(itemIndex, 1); renderAll(); triggerAutoSave(); }
+        function updateItem(sectionIndex, itemIndex, val) { cvSections[sectionIndex].items[itemIndex] = val; triggerAutoSave(); }
+        function updateEduField(sIdx, iIdx, field, val) { cvSections[sIdx].items[iIdx][field] = val; triggerAutoSave(); }
+        function updatePaperField(sIdx, iIdx, field, val) { cvSections[sIdx].items[iIdx][field] = val; triggerAutoSave(); }
+        function updateRefField(sIdx, iIdx, field, val) { cvSections[sIdx].items[iIdx][field] = val; triggerAutoSave(); }
+
+        // --- MANUAL DOWNLOAD ---
+        function downloadWord() {
+            const content = document.querySelector('.cv-page').innerHTML;
+            const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${personalData.name.replace(/\s+/g, '_')}_CV.doc`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     </script>
 </body>

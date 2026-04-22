@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional CV Generator - Mahedi Style</title>
+    <title>Dynamic CV Generator - Mahedi Style</title>
     <style>
         :root {
             --primary-color: #2563eb;
@@ -24,7 +24,7 @@
         /* --- Left Panel: Editor --- */
         .editor-panel {
             width: 40%;
-            min-width: 350px;
+            min-width: 400px;
             background: white;
             border-right: 1px solid #ddd;
             padding: 20px;
@@ -32,100 +32,53 @@
             box-shadow: 2px 0 5px rgba(0,0,0,0.05);
         }
 
-        .header-title {
-            text-align: center;
-            margin-bottom: 20px;
-            color: var(--primary-color);
-            font-weight: bold;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            font-size: 0.85rem;
-            color: #333;
-        }
-
-        .form-group input, .form-group textarea {
-            width: 100%;
-            padding: 6px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 0.9rem;
-        }
-
-        .btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 5px;
-            font-size: 0.9rem;
-            display: block;
-        }
+        .header-title { text-align: center; margin-bottom: 20px; color: var(--primary-color); font-weight: bold; }
         
-        .btn-word { background-color: #2b5797; }
-
-        .btn-sm { width: auto; display: inline-block; margin-top: 0;}
-        .btn-danger {
-            background-color: #ef4444;
-            padding: 2px 6px;
-            font-size: 12px;
-            float: right;
-            border-radius: 3px;
+        .form-group { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.85rem; color: #333; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 0.9rem;
         }
 
-        .list-item {
-            background: #f9fafb;
-            padding: 8px;
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
-            margin-bottom: 5px;
+        /* Dynamic Section Styling */
+        .section-block {
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 15px;
+            position: relative;
         }
+        .section-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+        }
+        .section-title-input { font-weight: bold; border: none; border-bottom: 2px solid #ddd; width: 70%; }
+        .btn { background-color: var(--primary-color); color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; }
+        .btn-sm { padding: 2px 6px; font-size: 0.8rem; width: auto; display: inline-block;}
+        .btn-danger { background-color: #ef4444; }
+        .btn-add { background-color: #10b981; width: 100%; margin-top: 10px;}
+        
+        .list-item { background: #f9fafb; padding: 5px; border: 1px solid #eee; margin-bottom: 5px; border-radius: 4px; }
 
         /* --- Right Panel: Preview --- */
         .preview-panel {
-            flex: 1;
-            background: #525659;
-            padding: 40px;
-            overflow-y: auto;
-            display: flex;
-            justify-content: center;
+            flex: 1; background: #525659; padding: 40px; overflow-y: auto; display: flex; justify-content: center;
         }
 
         /* --- A4 Page Styles --- */
         .cv-page {
-            background: white;
-            width: var(--paper-width);
-            min-height: var(--paper-height); 
-            padding: 40px 50px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.3);
-            font-family: 'Times New Roman', Times, serif; 
-            color: #000;
-            position: relative;
-            line-height: 1.3;
+            background: white; width: var(--paper-width); min-height: var(--paper-height); padding: 40px 50px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3); font-family: 'Times New Roman', Times, serif; color: #000; line-height: 1.3;
         }
-
         .cv-header { text-align: center; margin-bottom: 15px; }
         .cv-name { font-size: 26px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
         .cv-contact { font-size: 11px; margin-top: 5px; line-height: 1.4; }
         .cv-section { margin-bottom: 12px; }
         .cv-section-title { font-size: 13px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #000; margin-bottom: 6px; padding-bottom: 2px; }
         .cv-summary { font-size: 11px; text-align: justify; margin-bottom: 10px; }
-        .cv-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 12px; }
-        .cv-skills ul, .cv-checklist ul { list-style: none; padding: 0; margin: 0; font-size: 11px; }
-        .cv-skills li::before, .cv-checklist li::before { content: "✓"; margin-right: 5px; }
+        
+        .cv-checklist ul, .cv-skills ul { list-style: none; padding: 0; margin: 0; font-size: 11px; }
+        .cv-checklist li::before, .cv-skills li::before { content: "✓"; margin-right: 5px; }
         .cv-edu-item { font-size: 11px; margin-bottom: 8px; }
         .cv-edu-header { display: flex; justify-content: space-between; font-weight: bold; }
         .cv-edu-sub { font-style: italic; }
@@ -141,11 +94,9 @@
             .cv-page { box-shadow: none; margin: 0; width: 100%; height: auto; page-break-after: avoid; }
             @page { margin: 0; size: auto; }
         }
-
         @media (max-width: 768px) {
             body { flex-direction: column; height: auto; overflow: auto; }
             .editor-panel { width: 100%; height: auto; }
-            .preview-panel { height: auto; }
         }
     </style>
 </head>
@@ -153,41 +104,44 @@
 
     <!-- INPUT FORM -->
     <aside class="editor-panel">
-        <h2 class="header-title">CV Editor</h2>
+        <h2 class="header-title">Dynamic CV Editor</h2>
         
+        <!-- Personal Info (Static) -->
         <div class="form-group">
             <label>Full Name</label>
-            <input type="text" id="name" oninput="updateCV()">
+            <input type="text" id="name" oninput="updatePersonal()">
         </div>
-
         <div class="form-group">
             <label>Contact Details</label>
-            <input type="text" id="email" placeholder="Email" oninput="updateCV()">
-            <input type="text" id="address" placeholder="Address" oninput="updateCV()">
-            <input type="text" id="web" placeholder="Website" oninput="updateCV()">
-            <input type="text" id="phone" placeholder="Phone" oninput="updateCV()">
+            <input type="text" id="email" placeholder="Email" oninput="updatePersonal()">
+            <input type="text" id="address" placeholder="Address" oninput="updatePersonal()">
+            <input type="text" id="web" placeholder="Website" oninput="updatePersonal()">
+            <input type="text" id="phone" placeholder="Phone" oninput="updatePersonal()">
         </div>
-
         <div class="form-group">
             <label>Professional Summary</label>
-            <textarea id="summary" rows="5" oninput="updateCV()"></textarea>
+            <textarea id="summary" rows="4" oninput="updatePersonal()"></textarea>
         </div>
 
-        <!-- Shortened inputs for brevity, use previous full version -->
-        <div class="form-group"><label>Download Options</label></div>
+        <hr>
+        <h3 style="text-align: center; color: #666;">SECTIONS MANAGER</h3>
+
+        <!-- Container for Dynamic Sections -->
+        <div id="dynamicFormContainer"></div>
+
+        <button class="btn btn-add" onclick="showAddSectionModal()">+ Add New Section</button>
         
-        <button class="btn" onclick="window.print()">Download PDF</button>
-        <button class="btn btn-word" onclick="handleDownloadAndSave()">Download Word (.doc)</button>
-        
+        <hr style="margin: 20px 0;">
+        <button class="btn" style="background-color: #10b981;" onclick="window.print()">📄 Download PDF</button>
+        <button class="btn" style="background-color: #2b5797;" onclick="downloadWord()">Download Word (.doc)</button>
         <small style="color:#666; display:block; margin-top:5px; font-size: 11px;">
-            * Clicking "Download Word" will automatically save a copy to Admin Drive.
+            * Downloading Word will auto-save to Admin Drive.
         </small>
     </aside>
 
     <!-- LIVE PREVIEW -->
     <main class="preview-panel">
-        <div id="cv-page" class="cv-page">
-            <!-- Header -->
+        <div class="cv-page">
             <div class="cv-header">
                 <div class="cv-name" id="cvName">MAHEDI HASSAN</div>
                 <div class="cv-contact">
@@ -197,115 +151,303 @@
                     <span id="cvPhone">+880...</span>
                 </div>
             </div>
-
-            <!-- Summary -->
             <div class="cv-section">
                 <div class="cv-summary" id="cvSummary">Summary...</div>
             </div>
-
-            <!-- Skills -->
-            <div class="cv-two-col">
-                <div class="cv-skills">
-                    <div class="cv-section-title">COMPUTATIONAL SKILLS</div>
-                    <ul id="cvCompSkills"></ul>
-                </div>
-                <div class="cv-skills">
-                    <div class="cv-section-title">LABORATORY EXPERTISE</div>
-                    <ul id="cvLabSkills"></ul>
-                </div>
-            </div>
-
-            <!-- Education -->
-            <div class="cv-section">
-                <div class="cv-section-title">EDUCATIONAL QUALIFICATION</div>
-                <div id="cvEducation"></div>
-            </div>
             
-            <!-- Training -->
-            <div class="cv-section">
-                <div class="cv-section-title">TRAINING AND CERTIFICATION</div>
-                <ul class="cv-checklist" id="cvTraining"></ul>
-            </div>
-            
-            <div class="cv-section">
-                <div class="cv-section-title">REFERENCES</div>
-                <div id="cvReferences"></div>
-            </div>
+            <!-- Dynamic CV Container -->
+            <div id="dynamicCVContainer"></div>
         </div>
     </main>
 
     <script>
         // --- CONFIGURATION ---
-        // স্টেপ ১ থেকে পাওয়া Web App URL নিচে বসাও:
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwRfjzozS61ooKqprLl51VdRBHOoiO69J0fiO6yU333IbuEexTtz6oc8COxoLWQX6Nd/exec"; 
+        // তোমার Google Apps Script এর URL নিচে বসাও:
+        const GOOGLE_SCRIPT_URL = "PASTE_YOUR_GOOGLE_SCRIPT_URL_HERE"; 
 
-        // --- Initial Data ---
-        let data = {
+        // --- INITIAL DATA (Mahedi's Exact Data) ---
+        let personalData = {
             name: "MAHEDI HASSAN",
             email: "biomahedihassan@gmail.com",
             address: "Telipara, Bason, Chandona-1702, Gazipur, Bangladesh",
             web: "https://mahedihassanazan.github.io/edu/",
             phone: "+8801575780459",
-            summary: "An essential factor in achieving excellence in the pharmaceutical industry...",
-            compSkills: ["Linux", "Biopython", "Pymol", "Autodock Vina"],
-            labSkills: ["Cell-Culture", "PCR", "Cloning", "ELISA"],
-            education: [
-                { degree: "Bachelor's of Biochemistry", school: "Gono Bishwabiddalay", concentration: "Biochemistry", result: "3.71" }
-            ],
-            training: ["Biosafety", "Bioinformatics Trainee"],
-            references: [
-                { name: "Dr. Shyam Sundar Shaha", title: "Associate Professor", contact: "+8801683-320497", email: "sshaha79@yahoo.com" }
-            ]
+            summary: "An essential factor in achieving excellence in pharmaceutical industry is developing a skilled, detail-oriented workforce committed to maintaining quality and compliance. I possess a strong foundation in laboratory practices and analytical techniques, supported by good proficiency in computer applications for data recording, analysis, and documentation."
         };
 
+        let cvSections = [
+            {
+                id: 1,
+                type: "list",
+                title: "COMPUTATIONAL SKILLS",
+                items: ["Linux", "Biopython", "Pymol", "Autodock Vina", "C-Docker", "Gromacs", "Amber", "HTML", "Origin Pro", "MS Office"]
+            },
+            {
+                id: 2,
+                type: "list",
+                title: "LABORATORY EXPERTISE",
+                items: ["Cell-Culture", "PCR", "Site-Directed Mutagenesis", "Cloning", "Phase Solubility", "Spectroscopy", "ELISA", "Automated Biochemistry Analyzer", "Microscopy & Imaging"]
+            },
+            {
+                id: 3,
+                type: "education",
+                title: "EDUCATIONAL QUALIFICATION",
+                items: [
+                    { degree: "Bachelor's of Biochemistry and Molecular Biology", school: "Gono Bishwabiddalay (2017-2021)", concentration: "Concentration: Biochemistry", result: "Results: 3.71 out of 4.0" },
+                    { degree: "Diploma In Laboratory Technology", school: "Chandana Institute (2012-2016)", concentration: "Laboratory Medicine", result: "3.81 out of 4.0" },
+                    { degree: "SSC", school: "M E H Arif College (2006-2012)", concentration: "Science", result: "4.44 out of 5.0" }
+                ]
+            },
+            {
+                id: 4,
+                type: "list",
+                title: "TRAINING AND CERTIFICATION",
+                items: ["Biosafety & Biosecurity (BSL-II)", "Bioinformatics & Drug Design Trainee (CADD)", "Student Research Ambassador (NSRI)"]
+            },
+            {
+                id: 5,
+                type: "list",
+                title: "ON-GOING PROJECT",
+                items: ["In-Silico and In-Vitro studies on Methaxalone derivatives", "Surface-Modified Gold Nanoparticles in Immunosensor Technology"]
+            },
+            {
+                id: 6,
+                type: "paper",
+                title: "PUBLISHED PAPERS",
+                items: [
+                    { title: "Effects of supplementing layers with alfalfa and moringa", link: "https://doi.org/10.34104/ajpab.023.01240130" },
+                    { title: "Identification of tapeworms in poultry", link: "https://doi.org/10.34104/ijavs.024.012026" }
+                ]
+            },
+            {
+                id: 7,
+                type: "list",
+                title: "CAPABILITIES",
+                items: ["Adaptable to diverse environments", "Effective relationship builder", "Leadership capability", "Strong team player"]
+            },
+            {
+                id: 8,
+                type: "list",
+                title: "LANGUAGE PROFICIENCY",
+                items: ["English: Proficient", "Bangla: Native", "Hindi: Conversational"]
+            },
+            {
+                id: 9,
+                type: "reference",
+                title: "REFERENCES",
+                items: [
+                    { name: "Dr. Shyam Sundar Shaha", title: "Associate Professor, Dept of BMB, Gono Bishwabidyalay", contact: "+8801683-320497", email: "sshaha79@yahoo.com" },
+                    { name: "Dr. Fuad Hossain", title: "Associate Professor and Head, Dept of BMB", contact: "+8801979864011", email: "head.bmb@gonouniversity.edu.bd" }
+                ]
+            }
+        ];
+
+        // --- INITIALIZATION ---
         window.onload = function() {
-            document.getElementById('name').value = data.name;
-            document.getElementById('email').value = data.email;
-            document.getElementById('address').value = data.address;
-            document.getElementById('web').value = data.web;
-            document.getElementById('phone').value = data.phone;
-            document.getElementById('summary').value = data.summary;
-            updateCV();
+            // Load Personal Info
+            document.getElementById('name').value = personalData.name;
+            document.getElementById('email').value = personalData.email;
+            document.getElementById('address').value = personalData.address;
+            document.getElementById('web').value = personalData.web;
+            document.getElementById('phone').value = personalData.phone;
+            document.getElementById('summary').value = personalData.summary;
+
+            updatePersonal();
+            renderAll();
         };
 
-        function updateCV() {
-            data.name = document.getElementById('name').value;
-            data.email = document.getElementById('email').value;
-            data.address = document.getElementById('address').value;
-            data.web = document.getElementById('web').value;
-            data.phone = document.getElementById('phone').value;
-            data.summary = document.getElementById('summary').value;
+        function updatePersonal() {
+            personalData.name = document.getElementById('name').value;
+            personalData.email = document.getElementById('email').value;
+            personalData.address = document.getElementById('address').value;
+            personalData.web = document.getElementById('web').value;
+            personalData.phone = document.getElementById('phone').value;
+            personalData.summary = document.getElementById('summary').value;
 
-            document.getElementById('cvName').innerText = data.name;
-            document.getElementById('cvEmail').innerText = data.email;
-            document.getElementById('cvAddress').innerText = data.address;
-            document.getElementById('cvWeb').innerText = data.web;
-            document.getElementById('cvPhone').innerText = data.phone;
-            document.getElementById('cvSummary').innerText = data.summary;
-            
-            document.getElementById('cvCompSkills').innerHTML = data.compSkills.map(s => `<li>${s}</li>`).join('');
-            document.getElementById('cvLabSkills').innerHTML = data.labSkills.map(s => `<li>${s}</li>`).join('');
-            
-            document.getElementById('cvEducation').innerHTML = data.education.map(e => `
-                <div class="cv-edu-item">
-                    <div class="cv-edu-header"><span>${e.degree}</span></div>
-                    <div class="cv-edu-sub">${e.school}</div>
-                </div>`).join('');
-            
-            document.getElementById('cvTraining').innerHTML = data.training.map(t => `<li>${t}</li>`).join('');
-            document.getElementById('cvReferences').innerHTML = data.references.map(r => `
-                <div class="cv-ref-block"><div class="cv-ref-name">${r.name}</div><div>${r.title}</div><div>Contact: ${r.contact}</div></div>`).join('');
+            document.getElementById('cvName').innerText = personalData.name;
+            document.getElementById('cvEmail').innerText = personalData.email;
+            document.getElementById('cvAddress').innerText = personalData.address;
+            document.getElementById('cvWeb').innerText = personalData.web;
+            document.getElementById('cvPhone').innerText = personalData.phone;
+            document.getElementById('cvSummary').innerText = personalData.summary;
         }
 
-        // --- COMBINED FUNCTION: Download for User + Send to Admin ---
-        function handleDownloadAndSave() {
-            const content = document.getElementById('cv-page').innerHTML;
-            const fileName = `${data.name.replace(/\s+/g, '_')}_CV.doc`;
+        // --- DYNAMIC RENDERER ---
+        function renderAll() {
+            const formContainer = document.getElementById('dynamicFormContainer');
+            const cvContainer = document.getElementById('dynamicCVContainer');
             
-            // 1. Create Blob for Word File
+            formContainer.innerHTML = '';
+            cvContainer.innerHTML = '';
+
+            cvSections.forEach((section, index) => {
+                // 1. Render Form Inputs for this section
+                const formSection = document.createElement('div');
+                formSection.className = 'section-block';
+                
+                let formHTML = `
+                    <div class="section-header">
+                        <input class="section-title-input" value="${section.title}" oninput="updateSectionTitle(${index}, this.value)">
+                        <button class="btn btn-danger btn-sm" onclick="deleteSection(${index})">Delete Section</button>
+                    </div>
+                `;
+
+                // Render Items based on Type
+                if(section.type === 'list' || section.type === 'education' || section.type === 'paper' || section.type === 'reference') {
+                    section.items.forEach((item, itemIndex) => {
+                        formHTML += `<div class="list-item">`;
+                        
+                        if (section.type === 'list') {
+                            formHTML += `
+                                <input type="text" value="${item}" oninput="updateItem(${index}, ${itemIndex}, this.value)">
+                                <button class="btn btn-danger btn-sm" style="float:right" onclick="deleteItem(${index}, ${itemIndex})">×</button>
+                            `;
+                        } else if (section.type === 'education') {
+                            formHTML += `
+                                <button class="btn btn-danger btn-sm" style="float:right" onclick="deleteItem(${index}, ${itemIndex})">×</button>
+                                <input type="text" placeholder="Degree" value="${item.degree}" oninput="updateEduField(${index}, ${itemIndex}, 'degree', this.value)"><br>
+                                <input type="text" placeholder="School" value="${item.school}" oninput="updateEduField(${index}, ${itemIndex}, 'school', this.value)"><br>
+                                <input type="text" placeholder="Concentration" value="${item.concentration}" oninput="updateEduField(${index}, ${itemIndex}, 'concentration', this.value)"><br>
+                                <input type="text" placeholder="Result" value="${item.result}" oninput="updateEduField(${index}, ${itemIndex}, 'result', this.value)">
+                            `;
+                        } else if (section.type === 'paper') {
+                            formHTML += `
+                                <button class="btn btn-danger btn-sm" style="float:right" onclick="deleteItem(${index}, ${itemIndex})">×</button>
+                                <input type="text" placeholder="Paper Title" value="${item.title}" oninput="updatePaperField(${index}, ${itemIndex}, 'title', this.value)"><br>
+                                <input type="text" placeholder="Link" value="${item.link}" oninput="updatePaperField(${index}, ${itemIndex}, 'link', this.value)">
+                            `;
+                        } else if (section.type === 'reference') {
+                            formHTML += `
+                                <button class="btn btn-danger btn-sm" style="float:right" onclick="deleteItem(${index}, ${itemIndex})">×</button>
+                                <input type="text" placeholder="Name" value="${item.name}" oninput="updateRefField(${index}, ${itemIndex}, 'name', this.value)"><br>
+                                <input type="text" placeholder="Title" value="${item.title}" oninput="updateRefField(${index}, ${itemIndex}, 'title', this.value)"><br>
+                                <input type="text" placeholder="Contact" value="${item.contact}" oninput="updateRefField(${index}, ${itemIndex}, 'contact', this.value)"><br>
+                                <input type="text" placeholder="Email" value="${item.email}" oninput="updateRefField(${index}, ${itemIndex}, 'email', this.value)">
+                            `;
+                        }
+                        formHTML += `</div>`;
+                    });
+                    
+                    // Add Item Button
+                    formHTML += `<button class="btn btn-sm" onclick="addItem(${index})">+ Add Item</button>`;
+                }
+
+                formSection.innerHTML = formHTML;
+                formContainer.appendChild(formSection);
+
+                // 2. Render CV Preview for this section
+                const cvSectionDiv = document.createElement('div');
+                cvSectionDiv.className = 'cv-section';
+                
+                let cvHTML = `<div class="cv-section-title">${section.title}</div>`;
+                
+                if(section.type === 'list') {
+                    cvHTML += `<ul class="cv-checklist">` + section.items.map(i => `<li>${i}</li>`).join('') + `</ul>`;
+                } else if (section.type === 'education') {
+                    section.items.forEach(e => {
+                        cvHTML += `
+                            <div class="cv-edu-item">
+                                <div class="cv-edu-header"><span>${e.degree}</span></div>
+                                <div class="cv-edu-sub">${e.school}</div>
+                                <div>${e.concentration}</div>
+                                <div>${e.result}</div>
+                            </div>`;
+                    });
+                } else if (section.type === 'paper') {
+                    section.items.forEach(p => {
+                        cvHTML += `
+                            <div class="cv-paper">
+                                ✓ ${p.title} <br>
+                                <a href="${p.link}" target="_blank">${p.link}</a>
+                            </div>`;
+                    });
+                } else if (section.type === 'reference') {
+                    section.items.forEach(r => {
+                        cvHTML += `
+                            <div class="cv-ref-block">
+                                <div class="cv-ref-name">${r.name}</div>
+                                <div>${r.title}</div>
+                                <div>Contact: ${r.contact}</div>
+                                <div>Email: ${r.email}</div>
+                            </div>`;
+                    });
+                }
+
+                cvSectionDiv.innerHTML = cvHTML;
+                cvContainer.appendChild(cvSectionDiv);
+            });
+        }
+
+        // --- MANIPULATION FUNCTIONS ---
+        
+        function addSection(type) {
+            const newId = cvSections.length > 0 ? Math.max(...cvSections.map(s => s.id)) + 1 : 1;
+            const newSection = {
+                id: newId,
+                type: type,
+                title: "NEW SECTION",
+                items: type === 'education' ? [{degree:'', school:'', concentration:'', result:''}] : 
+                       type === 'paper' ? [{title:'', link:''}] :
+                       type === 'reference' ? [{name:'', title:'', contact:'', email:''}] :
+                       [""]
+            };
+            cvSections.push(newSection);
+            renderAll();
+        }
+
+        function showAddSectionModal() {
+            const type = prompt("Enter Section Type:\n1. list (Skills, Training)\n2. education\n3. paper\n4. reference");
+            if (type === 'list' || type === 'education' || type === 'paper' || type === 'reference') {
+                addSection(type);
+            } else {
+                alert("Invalid type! Please type: list, education, paper, or reference");
+            }
+        }
+
+        function deleteSection(index) {
+            if(confirm("Are you sure you want to delete this section?")) {
+                cvSections.splice(index, 1);
+                renderAll();
+            }
+        }
+
+        function updateSectionTitle(index, val) {
+            cvSections[index].title = val;
+            renderAll(); // Re-render to update CV preview
+        }
+
+        function addItem(sectionIndex) {
+            const sec = cvSections[sectionIndex];
+            if(sec.type === 'list') sec.items.push("");
+            else if(sec.type === 'education') sec.items.push({degree:'', school:'', concentration:'', result:''});
+            else if(sec.type === 'paper') sec.items.push({title:'', link:''});
+            else if(sec.type === 'reference') sec.items.push({name:'', title:'', contact:'', email:''});
+            renderAll();
+        }
+
+        function deleteItem(sectionIndex, itemIndex) {
+            cvSections[sectionIndex].items.splice(itemIndex, 1);
+            renderAll();
+        }
+
+        function updateItem(sectionIndex, itemIndex, val) {
+            cvSections[sectionIndex].items[itemIndex] = val;
+            renderAll();
+        }
+
+        function updateEduField(sIdx, iIdx, field, val) { cvSections[sIdx].items[iIdx][field] = val; renderAll(); }
+        function updatePaperField(sIdx, iIdx, field, val) { cvSections[sIdx].items[iIdx][field] = val; renderAll(); }
+        function updateRefField(sIdx, iIdx, field, val) { cvSections[sIdx].items[iIdx][field] = val; renderAll(); }
+
+        // --- DOWNLOAD & SAVE FUNCTIONS ---
+        function downloadWord() {
+            const content = document.querySelector('.cv-page').innerHTML;
+            const fileName = `${personalData.name.replace(/\s+/g, '_')}_CV.doc`;
+            
+            // 1. Create Blob
             const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
 
-            // 2. User Download (Immediate action)
+            // 2. User Download
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
@@ -314,38 +456,25 @@
             link.click();
             document.body.removeChild(link);
 
-            // 3. Admin Save (Background action)
+            // 3. Auto Save to Admin Drive
             sendToAdminDrive(blob, fileName);
         }
 
-        // --- Helper: Send Blob to Google Drive ---
         function sendToAdminDrive(blob, fileName) {
-            // Convert Blob to Base64
             const reader = new FileReader();
             reader.readAsDataURL(blob);
             reader.onloadend = function() {
-                const base64data = reader.result.split(',')[1]; // Remove Data URI prefix
+                const base64data = reader.result.split(',')[1]; 
+                const payload = { fileName: fileName, fileBase64: base64data };
 
-                // Payload
-                const payload = {
-                    fileName: fileName,
-                    fileBase64: base64data
-                };
-
-                // Send to Google Apps Script
                 fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors', 
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 })
-                .then(() => {
-                    console.log("Auto-sent to Admin Drive successfully.");
-                    // Optional: Show a small toast message on UI if needed
-                })
-                .catch(err => console.error("Error sending to Drive:", err));
+                .then(() => console.log("File sent to Admin Drive."))
+                .catch(err => console.error("Error:", err));
             };
         }
     </script>

@@ -1,342 +1,451 @@
-(base) hmalik342@DESKTOP-VBBRSI9:~/cv_maker$ ls
-'Mahedi Hassan Update 2026_2027.pdf'
-(base) hmalik342@DESKTOP-VBBRSI9:~/cv_maker$ ata akta cv ace direcotry te tmr kaj holo python use kore user ar kac hote informatics chaibe google form link create kore user sei informatcs dile automatics tar cv make hoye jabe and je template ta hobe hobuhu jeta  Mahedi Hassan Update 2026_2027.pdf aye formate a hobe, tmr kaj holo aye template ke dekha read kora stydle and everything then
-
-তোমার আইডিয়াটা ভালো—but একটা গুরুত্বপূর্ণ সীমাবদ্ধতা আগে পরিষ্কার করি:
-আমি সরাসরি তোমার লোকাল ফাইল (Mahedi Hassan Update 2026_2027.pdf) খুলে দেখতে পারি না। তাই “হুবহু একই ডিজাইন” কপি করতে হলে তোমাকে PDF টা আপলোড করতে হবে অথবা অন্তত এর structure (section, font, layout) একটু describe করতে হবে।
-
-তারপরও আমি তোমাকে পুরা workflow + working system design দিয়ে দিচ্ছি, যেটা দিয়ে তুমি exactly এই কাজটা করতে পারবে 👇
-
-🔥 Complete System: Google Form → Python → Auto CV Generator
-✅ Step 1: Google Form Create
-
-তুমি Google Form বানাবে (manual, Python দিয়ে direct create করা যায় না সহজভাবে)
-
-Fields Example:
-Full Name
-Email
-Phone
-Address
-Education
-Experience
-Skills
-Projects
-Publications
-
-👉 তারপর responses যাবে Google Sheet-এ
-
-✅ Step 2: Google Sheet API Connect (Python)
-
-Python দিয়ে Google Sheet থেকে data read করো
-
-Install:
-pip install gspread oauth2client
-Code:
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
-
-scope = ["https://spreadsheets.google.com/feeds",
-         "https://www.googleapis.com/auth/drive"]
-
-creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
-client = gspread.authorize(creds)
-
-sheet = client.open("Form Responses 1").sheet1
-data = sheet.get_all_records()
-
-print(data)
-✅ Step 3: PDF Template Analysis (IMPORTANT)
-
-এখানে তোমার কাজ 👇
-
-তোমার CV-তে সাধারণত থাকবে:
-
-Header (Name + Contact)
-Education
-Experience
-Skills
-Projects
-Publications
-
-👉 তুমি যদি exact format replicate করতে চাও, তাহলে:
-
-font name
-font size
-alignment
-spacing
-
-এগুলো observe করতে হবে
-
-✅ Step 4: Python দিয়ে CV Generate (ReportLab)
-Install:
-pip install reportlab
-Basic Template Code:
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-from reportlab.lib.styles import getSampleStyleSheet
-
-def create_cv(data):
-    doc = SimpleDocTemplate("generated_cv.pdf")
-    styles = getSampleStyleSheet()
-
-    elements = []
-
-    elements.append(Paragraph(f"<b>{data['Full Name']}</b>", styles['Title']))
-    elements.append(Spacer(1, 10))
-
-    elements.append(Paragraph(f"Email: {data['Email']}", styles['Normal']))
-    elements.append(Paragraph(f"Phone: {data['Phone']}", styles['Normal']))
-
-    elements.append(Spacer(1, 12))
-
-    elements.append(Paragraph("<b>Education</b>", styles['Heading2']))
-    elements.append(Paragraph(data['Education'], styles['Normal']))
-
-    elements.append(Spacer(1, 12))
-
-    elements.append(Paragraph("<b>Experience</b>", styles['Heading2']))
-    elements.append(Paragraph(data['Experience'], styles['Normal']))
-
-    doc.build(elements)
-✅ Step 5: Auto Generate for Each User
-for row in data:
-    create_cv(row)
-🚀 Advanced Version (Recommended)
-🔹 Option 1: Use HTML Template + Convert to PDF
-
-👉 Perfect for exact design match
-
-Install:
-
-pip install pdfkit
-
-HTML template:
-
-<h1>{{name}}</h1>
-<p>{{email}}</p>
-
-Python:
-
-from jinja2 import Template
-import pdfkit
-
-html = Template(open("template.html").read()).render(name="Mahedi")
-pdfkit.from_string(html, "cv.pdf")
-🔥 BEST APPROACH (For Your Case)
-
-👉 তোমার requirement অনুযায়ী:
-
-✔ Google Form input
-✔ Auto CV
-✔ Same design as your PDF
-
-👉 তাহলে use করো:
-
-👉 HTML + CSS template (exact copy design)
-👉 তারপর PDF convert
-
-⚠️ Important Limitation
-Python দিয়ে PDF read করে exact style copy করা খুব কঠিন
-Best way = manually template recreate করা
-👉 এখন তোমার next step:
-
-১. 
-PDF upload করো
-অথবা
-২. 
-Screenshot দাও
-
-👉 তারপর আমি তোমার CV template pixel-perfect replicate করে Python system বানিয়ে দিবো
-
-চাইলে আমি 
-পুরো systemটা deploy-ready করে দিতে পারি (with web app + auto download CV)।
-
-Mahedi Hassan Update 2026_2027.pdf
-PDF
-
-ভালো—আমি তোমার PDF successfully analyze করেছি। এখন তোমাকে একদম exact system design + template replication strategy দিচ্ছি 👇
-
-🔍 তোমার CV Template Analysis (from PDF)
-
-তোমার CV structure:
-
-🔝 Header Section
-NAME (ALL CAPS, center aligned, বড় font)
-Email
-Address
-Website
-Phone
-🧾 Summary Section (Paragraph)
-Professional summary (justified text)
-Medium font size
-Proper spacing
-🧠 Skills Section (2 column style)
-
-✔ Computational Skills
-✔ Laboratory Expertise
-
-✔ Bullet style (✓ symbol)
-
-🎓 Education Section
-Degree
-Institute
-Year
-Result
-
-👉 Layout Style:
-
-Clean academic CV
-No table border
-Multi-column feel
-Minimal design (very important)
-🚀 এখন তোমার জন্য COMPLETE AUTOMATION SOLUTION
-🔥 FINAL SYSTEM FLOW
-Google Form → Google Sheet → Python → Template → PDF CV (same design)
-🧩 Step 1: Data Structure (IMPORTANT)
-
-Google Form এ এইভাবে field বানাও:
-
-Full Name
-Email
-Phone
-Address
-Website
-Summary
-Computational Skills (comma separated)
-Laboratory Skills (comma separated)
-Education 1
-Education 2
-Experience
-⚙️ Step 2: BEST WAY → HTML Template (Exact Copy)
-
-👉 কারণ:
-ReportLab দিয়ে exact design করা কঠিন
-HTML + CSS = 100% same look possible
-
-🧾 HTML Template (Replica of your CV)
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<style>
-body {
-    font-family: Arial;
-    margin: 40px;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto CV Generator - Mahedi Template</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --bg-color: #f3f4f6;
+            --paper-width: 210mm;
+            --paper-height: 297mm;
+        }
 
-.header {
-    text-align: center;
-}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
 
-.name {
-    font-size: 28px;
-    font-weight: bold;
-}
+        /* --- Left Panel: Editor --- */
+        .editor-panel {
+            width: 40%;
+            min-width: 350px;
+            background: white;
+            border-right: 1px solid #ddd;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+        }
 
-.section-title {
-    font-weight: bold;
-    margin-top: 20px;
-}
+        .header-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
 
-.skills {
-    display: flex;
-    justify-content: space-between;
-}
+        .form-group {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
 
-.column {
-    width: 45%;
-}
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #333;
+        }
 
-</style>
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .btn-danger {
+            background-color: #ef4444;
+            width: auto;
+            padding: 2px 8px;
+            font-size: 12px;
+            float: right;
+        }
+
+        .list-item {
+            background: #f9fafb;
+            padding: 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+
+        /* --- Right Panel: Preview --- */
+        .preview-panel {
+            flex: 1;
+            background: #525659;
+            padding: 40px;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* --- A4 Page Styles (The CV) --- */
+        .cv-page {
+            background: white;
+            width: var(--paper-width);
+            height: var(--paper-height); /* Fixed height for A4 */
+            padding: 40px 50px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            font-family: 'Times New Roman', Times, serif; /* Academic Font */
+            color: #000;
+            position: relative;
+        }
+
+        .cv-header {
+            text-align: center;
+            border-bottom: 1px solid #000;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .cv-name {
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cv-contact {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .cv-section {
+            margin-bottom: 15px;
+        }
+
+        .cv-section-title {
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 8px;
+            padding-bottom: 2px;
+        }
+
+        .cv-summary {
+            font-size: 12px;
+            text-align: justify;
+            line-height: 1.4;
+        }
+
+        .cv-two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .cv-skills ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 12px;
+        }
+
+        .cv-skills li::before {
+            content: "✓";
+            color: black;
+            margin-right: 5px;
+        }
+
+        .cv-edu-item {
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .cv-edu-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+        }
+
+        .cv-edu-sub {
+            font-style: italic;
+        }
+
+        /* --- Print Styles (Crucial for PDF) --- */
+        @media print {
+            body {
+                background: white;
+                height: auto;
+                overflow: visible;
+                display: block;
+            }
+            .editor-panel {
+                display: none;
+            }
+            .preview-panel {
+                padding: 0;
+                background: white;
+                display: block;
+                overflow: visible;
+            }
+            .cv-page {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+                height: auto;
+                page-break-after: avoid;
+            }
+            @page {
+                margin: 0;
+                size: auto;
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                height: auto;
+                overflow: auto;
+            }
+            .editor-panel {
+                width: 100%;
+                height: auto;
+            }
+            .preview-panel {
+                height: auto;
+            }
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="header">
-    <div class="name">{{name}}</div>
-    <div>{{email}}</div>
-    <div>{{address}}</div>
-    <div>{{website}}</div>
-    <div>{{phone}}</div>
-</div>
+    <!-- INPUT FORM -->
+    <aside class="editor-panel">
+        <h2 class="header-title">CV Editor</h2>
+        
+        <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="name" placeholder="MAHEDI HASSAN" oninput="updateCV()">
+        </div>
 
-<p>{{summary}}</p>
+        <div class="form-group">
+            <label>Contact Info</label>
+            <input type="text" id="phone" placeholder="Phone" oninput="updateCV()">
+            <input type="email" id="email" placeholder="Email" oninput="updateCV()">
+            <input type="text" id="address" placeholder="Address" oninput="updateCV()">
+            <input type="text" id="web" placeholder="Website/LinkedIn" oninput="updateCV()">
+        </div>
 
-<div class="skills">
-    <div class="column">
-        <div class="section-title">COMPUTATIONAL SKILLS</div>
-        {% for skill in comp_skills %}
-        <div>✓ {{skill}}</div>
-        {% endfor %}
-    </div>
+        <div class="form-group">
+            <label>Professional Summary</label>
+            <textarea id="summary" rows="4" placeholder="Write a short summary..." oninput="updateCV()"></textarea>
+        </div>
 
-    <div class="column">
-        <div class="section-title">LABORATORY EXPERTISE</div>
-        {% for skill in lab_skills %}
-        <div>✓ {{skill}}</div>
-        {% endfor %}
-    </div>
-</div>
+        <div class="form-group">
+            <label>Computational Skills</label>
+            <div id="compSkillsList"></div>
+            <button class="btn" onclick="addSkill('comp')">+ Add Skill</button>
+        </div>
 
-<div class="section-title">EDUCATIONAL QUALIFICATION</div>
-<p>{{education}}</p>
+        <div class="form-group">
+            <label>Laboratory Expertise</label>
+            <div id="labSkillsList"></div>
+            <button class="btn" onclick="addSkill('lab')">+ Add Expertise</button>
+        </div>
 
+        <div class="form-group">
+            <label>Education</label>
+            <div id="eduList"></div>
+            <button class="btn" onclick="addEducation()">+ Add Education</button>
+        </div>
+
+        <button class="btn" style="background-color: #10b981; font-size: 1.1em; margin-top: 20px;" onclick="window.print()">📄 Download PDF</button>
+    </aside>
+
+    <!-- LIVE PREVIEW -->
+    <main class="preview-panel">
+        <div class="cv-page">
+            <!-- Header -->
+            <div class="cv-header">
+                <div class="cv-name" id="cvName">YOUR NAME</div>
+                <div class="cv-contact">
+                    <span id="cvAddress">Address</span> | 
+                    <span id="cvPhone">Phone</span> | 
+                    <span id="cvEmail">Email</span> | 
+                    <span id="cvWeb">Website</span>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="cv-section">
+                <div class="cv-section-title">PROFESSIONAL SUMMARY</div>
+                <div class="cv-summary" id="cvSummary">
+                    Your professional summary will appear here. Start typing in the left panel to generate your CV instantly.
+                </div>
+            </div>
+
+            <!-- Skills (Two Columns) -->
+            <div class="cv-section">
+                <div class="cv-two-col">
+                    <div class="cv-skills">
+                        <div class="cv-section-title">COMPUTATIONAL SKILLS</div>
+                        <ul id="cvCompSkills">
+                            <li>Python</li>
+                            <li>Data Analysis</li>
+                        </ul>
+                    </div>
+                    <div class="cv-skills">
+                        <div class="cv-section-title">LABORATORY EXPERTISE</div>
+                        <ul id="cvLabSkills">
+                            <li>PCR</li>
+                            <li>Cell Culture</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Education -->
+            <div class="cv-section">
+                <div class="cv-section-title">EDUCATIONAL QUALIFICATION</div>
+                <div id="cvEducation">
+                    <div class="cv-edu-item">
+                        <div class="cv-edu-header">
+                            <span>B.Sc in Computer Science</span>
+                            <span>2026</span>
+                        </div>
+                        <div class="cv-edu-sub">University of Dhaka</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Initial Data State
+        let compSkills = ['Python', 'JavaScript', 'HTML/CSS'];
+        let labSkills = ['Molecular Biology', 'Bioinformatics', 'PCR'];
+        let education = [
+            { degree: 'B.Sc in Computer Science', school: 'University of Science & Tech', year: '2026' },
+            { degree: 'Higher Secondary Certificate', school: 'Notre Dame College', year: '2022' }
+        ];
+
+        // Render Inputs based on state
+        function renderInputs() {
+            // Comp Skills
+            const compContainer = document.getElementById('compSkillsList');
+            compContainer.innerHTML = '';
+            compSkills.forEach((skill, index) => {
+                compContainer.innerHTML += `
+                    <div class="list-item">
+                        <button class="btn btn-danger" onclick="removeSkill('comp', ${index})">x</button>
+                        <input type="text" value="${skill}" oninput="updateSkill('comp', ${index}, this.value)" placeholder="Skill">
+                    </div>`;
+            });
+
+            // Lab Skills
+            const labContainer = document.getElementById('labSkillsList');
+            labContainer.innerHTML = '';
+            labSkills.forEach((skill, index) => {
+                labContainer.innerHTML += `
+                    <div class="list-item">
+                        <button class="btn btn-danger" onclick="removeSkill('lab', ${index})">x</button>
+                        <input type="text" value="${skill}" oninput="updateSkill('lab', ${index}, this.value)" placeholder="Expertise">
+                    </div>`;
+            });
+
+            // Education
+            const eduContainer = document.getElementById('eduList');
+            eduContainer.innerHTML = '';
+            education.forEach((edu, index) => {
+                eduContainer.innerHTML += `
+                    <div class="list-item">
+                        <button class="btn btn-danger" onclick="removeEducation(${index})">x</button>
+                        <input type="text" value="${edu.degree}" oninput="updateEdu(${index}, 'degree', this.value)" placeholder="Degree">
+                        <input type="text" value="${edu.school}" oninput="updateEdu(${index}, 'school', this.value)" placeholder="Institute">
+                        <input type="text" value="${edu.year}" oninput="updateEdu(${index}, 'year', this.value)" placeholder="Year">
+                    </div>`;
+            });
+        }
+
+        // Update Live Preview
+        function updateCV() {
+            document.getElementById('cvName').innerText = document.getElementById('name').value || 'YOUR NAME';
+            document.getElementById('cvAddress').innerText = document.getElementById('address').value || 'Address';
+            document.getElementById('cvPhone').innerText = document.getElementById('phone').value || 'Phone';
+            document.getElementById('cvEmail').innerText = document.getElementById('email').value || 'Email';
+            document.getElementById('cvWeb').innerText = document.getElementById('web').value || 'Website';
+            
+            document.getElementById('cvSummary').innerText = document.getElementById('summary').value || 'Summary text...';
+
+            // Update Skills Preview
+            document.getElementById('cvCompSkills').innerHTML = compSkills.map(s => `<li>${s}</li>`).join('');
+            document.getElementById('cvLabSkills').innerHTML = labSkills.map(s => `<li>${s}</li>`).join('');
+
+            // Update Education Preview
+            const eduHTML = education.map(e => `
+                <div class="cv-edu-item">
+                    <div class="cv-edu-header">
+                        <span>${e.degree}</span>
+                        <span>${e.year}</span>
+                    </div>
+                    <div class="cv-edu-sub">${e.school}</div>
+                </div>
+            `).join('');
+            document.getElementById('cvEducation').innerHTML = eduHTML;
+        }
+
+        // Logic Functions
+        function addSkill(type) {
+            if(type === 'comp') compSkills.push('');
+            else labSkills.push('');
+            renderInputs();
+            updateCV();
+        }
+
+        function removeSkill(type, index) {
+            if(type === 'comp') compSkills.splice(index, 1);
+            else labSkills.splice(index, 1);
+            renderInputs();
+            updateCV();
+        }
+
+        function updateSkill(type, index, value) {
+            if(type === 'comp') compSkills[index] = value;
+            else labSkills[index] = value;
+            updateCV();
+        }
+
+        function addEducation() {
+            education.push({ degree: '', school: '', year: '' });
+            renderInputs();
+            updateCV();
+        }
+
+        function removeEducation(index) {
+            education.splice(index, 1);
+            renderInputs();
+            updateCV();
+        }
+
+        function updateEdu(index, field, value) {
+            education[index][field] = value;
+            updateCV();
+        }
+
+        // Initialize
+        renderInputs();
+        updateCV();
+    </script>
 </body>
 </html>
-🐍 Step 3: Python Code (Auto CV Generator)
-from jinja2 import Template
-import pdfkit
-
-def generate_cv(data):
-    with open("template.html") as f:
-        template = Template(f.read())
-
-    html = template.render(
-        name=data['name'],
-        email=data['email'],
-        phone=data['phone'],
-        address=data['address'],
-        website=data['website'],
-        summary=data['summary'],
-        comp_skills=data['comp_skills'].split(','),
-        lab_skills=data['lab_skills'].split(','),
-        education=data['education']
-    )
-
-    pdfkit.from_string(html, f"{data['name']}_CV.pdf")
-🔗 Step 4: Google Sheet Integration
-
-আগের মতো:
-
-data = sheet.get_all_records()
-
-for row in data:
-    generate_cv(row)
-⚠️ Important Tools Install
-pip install jinja2 pdfkit
-sudo apt install wkhtmltopdf
-🔥 BONUS (Upgrade Version)
-
-আমি চাইলে তোমার জন্য বানাতে পারি:
-
-✅ Web App (Flask / Streamlit)
-✅ Direct Form → CV Download
-✅ Multiple Templates
-✅ Auto LinkedIn-style CV
-
-👉 এখন তুমি কী করবে:
-
-👉 বলো:
-
-Option 1:
-
-"Make it exact same design (pixel perfect)"
-
-👉 আমি তোমার PDF দেখে
-font, spacing, alignment fully match করে final code দিবো
-
-Option 2:
-
-"Make web app"
-
-👉 আমি তোমাকে full system বানিয়ে দিবো (deploy ready)
-
-তুমি already strong research background থেকে আসছো—এইটা properly করলে এটা তোমার একটা real SaaS product হয়ে যেতে পারে 💼

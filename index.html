@@ -74,10 +74,9 @@
             font-size: 0.9rem;
             display: block;
         }
-
-        .btn-drive { background-color: #db4437; margin-top: 15px; }
-        .btn-word { background-color: #2b5797; }
         
+        .btn-word { background-color: #2b5797; }
+
         .btn-sm { width: auto; display: inline-block; margin-top: 0;}
         .btn-danger {
             background-color: #ef4444;
@@ -118,73 +117,17 @@
             line-height: 1.3;
         }
 
-        .cv-header {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .cv-name {
-            font-size: 26px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .cv-contact {
-            font-size: 11px;
-            margin-top: 5px;
-            line-height: 1.4;
-        }
-
-        .cv-section {
-            margin-bottom: 12px;
-        }
-
-        .cv-section-title {
-            font-size: 13px;
-            font-weight: bold;
-            text-transform: uppercase;
-            border-bottom: 1px solid #000;
-            margin-bottom: 6px;
-            padding-bottom: 2px;
-        }
-
-        .cv-summary {
-            font-size: 11px;
-            text-align: justify;
-            margin-bottom: 10px;
-        }
-
-        .cv-two-col {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 12px;
-        }
-
-        .cv-skills ul, .cv-checklist ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            font-size: 11px;
-        }
-
-        .cv-skills li::before, .cv-checklist li::before {
-            content: "✓";
-            margin-right: 5px;
-        }
-
-        .cv-edu-item {
-            font-size: 11px;
-            margin-bottom: 8px;
-        }
-
-        .cv-edu-header {
-            display: flex;
-            justify-content: space-between;
-            font-weight: bold;
-        }
-
+        .cv-header { text-align: center; margin-bottom: 15px; }
+        .cv-name { font-size: 26px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .cv-contact { font-size: 11px; margin-top: 5px; line-height: 1.4; }
+        .cv-section { margin-bottom: 12px; }
+        .cv-section-title { font-size: 13px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #000; margin-bottom: 6px; padding-bottom: 2px; }
+        .cv-summary { font-size: 11px; text-align: justify; margin-bottom: 10px; }
+        .cv-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 12px; }
+        .cv-skills ul, .cv-checklist ul { list-style: none; padding: 0; margin: 0; font-size: 11px; }
+        .cv-skills li::before, .cv-checklist li::before { content: "✓"; margin-right: 5px; }
+        .cv-edu-item { font-size: 11px; margin-bottom: 8px; }
+        .cv-edu-header { display: flex; justify-content: space-between; font-weight: bold; }
         .cv-edu-sub { font-style: italic; }
         .cv-paper { font-size: 11px; margin-bottom: 5px; }
         .cv-ref-block { font-size: 11px; margin-bottom: 10px; }
@@ -230,20 +173,15 @@
             <textarea id="summary" rows="5" oninput="updateCV()"></textarea>
         </div>
 
-        <!-- Shortened for brevity, assumes previous data structure is preserved in JS -->
-        <div class="form-group"><label>Skills</label><small>Edit in JS Object if needed or use expanded form from previous step.</small></div>
+        <!-- Shortened inputs for brevity, use previous full version -->
+        <div class="form-group"><label>Download Options</label></div>
         
-        <div class="form-group">
-            <label>Download Options</label>
-            <button class="btn" onclick="window.print()">Download PDF</button>
-            <button class="btn btn-word" onclick="downloadWord()">Download Word (.doc)</button>
-            
-            <hr style="margin: 15px 0; border-top: 1px dashed #ccc;">
-            
-            <!-- THE NEW BUTTON -->
-            <button class="btn btn-drive" onclick="saveToGoogleDrive()">☁ Save to Admin Drive</button>
-            <small style="color:#666; display:block; margin-top:5px;">Sends file directly to Admin's Google Drive.</small>
-        </div>
+        <button class="btn" onclick="window.print()">Download PDF</button>
+        <button class="btn btn-word" onclick="handleDownloadAndSave()">Download Word (.doc)</button>
+        
+        <small style="color:#666; display:block; margin-top:5px; font-size: 11px;">
+            * Clicking "Download Word" will automatically save a copy to Admin Drive.
+        </small>
     </aside>
 
     <!-- LIVE PREVIEW -->
@@ -289,7 +227,6 @@
                 <ul class="cv-checklist" id="cvTraining"></ul>
             </div>
             
-            <!-- Other sections would go here based on previous full code -->
             <div class="cv-section">
                 <div class="cv-section-title">REFERENCES</div>
                 <div id="cvReferences"></div>
@@ -300,9 +237,9 @@
     <script>
         // --- CONFIGURATION ---
         // স্টেপ ১ থেকে পাওয়া Web App URL নিচে বসাও:
-        const GOOGLE_SCRIPT_URL = "PASTE_YOUR_GOOGLE_SCRIPT_URL_HERE"; 
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwRfjzozS61ooKqprLl51VdRBHOoiO69J0fiO6yU333IbuEexTtz6oc8COxoLWQX6Nd/exec"; 
 
-        // --- Initial Data (Same as before) ---
+        // --- Initial Data ---
         let data = {
             name: "MAHEDI HASSAN",
             email: "biomahedihassan@gmail.com",
@@ -321,7 +258,6 @@
             ]
         };
 
-        // --- Init ---
         window.onload = function() {
             document.getElementById('name').value = data.name;
             document.getElementById('email').value = data.email;
@@ -329,9 +265,6 @@
             document.getElementById('web').value = data.web;
             document.getElementById('phone').value = data.phone;
             document.getElementById('summary').value = data.summary;
-            
-            // Assuming simplified rendering for this snippet. 
-            // In your final file, use the full render functions from the previous step.
             updateCV();
         };
 
@@ -364,50 +297,55 @@
                 <div class="cv-ref-block"><div class="cv-ref-name">${r.name}</div><div>${r.title}</div><div>Contact: ${r.contact}</div></div>`).join('');
         }
 
-        // --- Download Functions ---
-        function downloadWord() {
+        // --- COMBINED FUNCTION: Download for User + Send to Admin ---
+        function handleDownloadAndSave() {
             const content = document.getElementById('cv-page').innerHTML;
+            const fileName = `${data.name.replace(/\s+/g, '_')}_CV.doc`;
+            
+            // 1. Create Blob for Word File
             const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
+
+            // 2. User Download (Immediate action)
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = `${data.name.replace(/\s+/g, '_')}_CV.doc`;
+            link.download = fileName;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+
+            // 3. Admin Save (Background action)
+            sendToAdminDrive(blob, fileName);
         }
 
-        // --- GOOGLE DRIVE SAVE FUNCTION ---
-        function saveToGoogleDrive() {
-            const fileName = `${data.name.replace(/\s+/g, '_')}_CV`;
-            const cvContent = document.getElementById('cv-page').innerHTML; // HTML Content
-
-            // Convert HTML string to Blob (MIME type Word)
-            const blob = new Blob(['\ufeff', cvContent], { type: 'application/msword' });
-
+        // --- Helper: Send Blob to Google Drive ---
+        function sendToAdminDrive(blob, fileName) {
             // Convert Blob to Base64
             const reader = new FileReader();
             reader.readAsDataURL(blob);
             reader.onloadend = function() {
-                const base64data = reader.result.split(',')[1]; // Get the base64 part
+                const base64data = reader.result.split(',')[1]; // Remove Data URI prefix
 
-                // Data to send
+                // Payload
                 const payload = {
                     fileName: fileName,
                     fileBase64: base64data
                 };
 
                 // Send to Google Apps Script
-                fetch(GOOGLE_https://script.google.com/macros/s/AKfycbwRfjzozS61ooKqprLl51VdRBHOoiO69J0fiO6yU333IbuEexTtz6oc8COxoLWQX6Nd/exec, {
+                fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors', // Important for simple deployments
+                    mode: 'no-cors', 
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(payload)
                 })
-                .then(() => alert("CV Successfully Saved to Admin's Google Drive!"))
-                .catch(err => console.error("Error:", err));
+                .then(() => {
+                    console.log("Auto-sent to Admin Drive successfully.");
+                    // Optional: Show a small toast message on UI if needed
+                })
+                .catch(err => console.error("Error sending to Drive:", err));
             };
         }
     </script>

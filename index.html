@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auto CV Generator - Mahedi Template</title>
+    <title>Professional CV Generator - Mahedi Style</title>
     <style>
         :root {
             --primary-color: #2563eb;
@@ -36,52 +36,57 @@
             text-align: center;
             margin-bottom: 20px;
             color: var(--primary-color);
+            font-weight: bold;
         }
 
         .form-group {
             margin-bottom: 15px;
             border-bottom: 1px solid #eee;
-            padding-bottom: 15px;
+            padding-bottom: 10px;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #333;
         }
 
         .form-group input, .form-group textarea {
             width: 100%;
-            padding: 8px;
+            padding: 6px;
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
+            font-size: 0.9rem;
         }
 
         .btn {
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 10px 15px;
+            padding: 6px 10px;
             border-radius: 4px;
             cursor: pointer;
             width: 100%;
             margin-top: 5px;
+            font-size: 0.9rem;
         }
+        
+        .btn-sm { width: auto; display: inline-block; margin-top: 0;}
 
         .btn-danger {
             background-color: #ef4444;
-            width: auto;
-            padding: 2px 8px;
+            padding: 2px 6px;
             font-size: 12px;
             float: right;
+            border-radius: 3px;
         }
 
         .list-item {
             background: #f9fafb;
-            padding: 10px;
+            padding: 8px;
             border: 1px solid #e5e7eb;
             border-radius: 4px;
             margin-bottom: 5px;
@@ -101,73 +106,83 @@
         .cv-page {
             background: white;
             width: var(--paper-width);
-            height: var(--paper-height); /* Fixed height for A4 */
+            min-height: var(--paper-height); 
             padding: 40px 50px;
             box-shadow: 0 0 10px rgba(0,0,0,0.3);
             font-family: 'Times New Roman', Times, serif; /* Academic Font */
             color: #000;
             position: relative;
+            line-height: 1.3;
         }
 
         .cv-header {
             text-align: center;
-            border-bottom: 1px solid #000;
-            padding-bottom: 10px;
             margin-bottom: 15px;
         }
 
         .cv-name {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
         .cv-contact {
-            font-size: 12px;
+            font-size: 11px;
             margin-top: 5px;
+            line-height: 1.4;
         }
 
         .cv-section {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .cv-section-title {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             text-transform: uppercase;
-            border-bottom: 1px solid #ccc;
-            margin-bottom: 8px;
+            border-bottom: 1px solid #000;
+            margin-bottom: 6px;
             padding-bottom: 2px;
         }
 
         .cv-summary {
-            font-size: 12px;
+            font-size: 11px;
             text-align: justify;
-            line-height: 1.4;
+            margin-bottom: 10px;
         }
 
+        /* Two Columns for Skills */
         .cv-two-col {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
+            margin-bottom: 12px;
         }
 
-        .cv-skills ul {
+        .cv-skills ul, .cv-checklist ul {
             list-style: none;
             padding: 0;
             margin: 0;
-            font-size: 12px;
+            font-size: 11px;
         }
 
         .cv-skills li::before {
             content: "✓";
-            color: black;
+            margin-right: 5px;
+        }
+        
+        .cv-checklist li {
+             margin-bottom: 3px;
+        }
+        
+        .cv-checklist li::before {
+            content: "✓";
             margin-right: 5px;
         }
 
         .cv-edu-item {
-            font-size: 12px;
+            font-size: 11px;
             margin-bottom: 8px;
         }
 
@@ -181,50 +196,36 @@
             font-style: italic;
         }
 
-        /* --- Print Styles (Crucial for PDF) --- */
-        @media print {
-            body {
-                background: white;
-                height: auto;
-                overflow: visible;
-                display: block;
-            }
-            .editor-panel {
-                display: none;
-            }
-            .preview-panel {
-                padding: 0;
-                background: white;
-                display: block;
-                overflow: visible;
-            }
-            .cv-page {
-                box-shadow: none;
-                margin: 0;
-                width: 100%;
-                height: auto;
-                page-break-after: avoid;
-            }
-            @page {
-                margin: 0;
-                size: auto;
-            }
+        .cv-paper {
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+        
+        .cv-paper a {
+            color: #000;
+            text-decoration: underline;
         }
 
-        /* Mobile Responsive */
+        .cv-ref-block {
+            font-size: 11px;
+            margin-bottom: 10px;
+        }
+        
+        .cv-ref-name { font-weight: bold; }
+
+        /* --- Print Styles --- */
+        @media print {
+            body { background: white; height: auto; overflow: visible; display: block; }
+            .editor-panel { display: none; }
+            .preview-panel { padding: 0; background: white; display: block; overflow: visible; }
+            .cv-page { box-shadow: none; margin: 0; width: 100%; height: auto; page-break-after: avoid; }
+            @page { margin: 0; size: auto; }
+        }
+
         @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-                height: auto;
-                overflow: auto;
-            }
-            .editor-panel {
-                width: 100%;
-                height: auto;
-            }
-            .preview-panel {
-                height: auto;
-            }
+            body { flex-direction: column; height: auto; overflow: auto; }
+            .editor-panel { width: 100%; height: auto; }
+            .preview-panel { height: auto; }
         }
     </style>
 </head>
@@ -232,42 +233,86 @@
 
     <!-- INPUT FORM -->
     <aside class="editor-panel">
-        <h2 class="header-title">CV Editor</h2>
+        <h2 class="header-title">CV Editor (Mahedi Style)</h2>
         
         <div class="form-group">
             <label>Full Name</label>
-            <input type="text" id="name" placeholder="MAHEDI HASSAN" oninput="updateCV()">
+            <input type="text" id="name" oninput="updateCV()">
         </div>
 
         <div class="form-group">
-            <label>Contact Info</label>
-            <input type="text" id="phone" placeholder="Phone" oninput="updateCV()">
-            <input type="email" id="email" placeholder="Email" oninput="updateCV()">
+            <label>Contact Details</label>
+            <input type="text" id="email" placeholder="Email" oninput="updateCV()">
             <input type="text" id="address" placeholder="Address" oninput="updateCV()">
-            <input type="text" id="web" placeholder="Website/LinkedIn" oninput="updateCV()">
+            <input type="text" id="web" placeholder="Website" oninput="updateCV()">
+            <input type="text" id="phone" placeholder="Phone" oninput="updateCV()">
         </div>
 
         <div class="form-group">
             <label>Professional Summary</label>
-            <textarea id="summary" rows="4" placeholder="Write a short summary..." oninput="updateCV()"></textarea>
+            <textarea id="summary" rows="5" oninput="updateCV()"></textarea>
         </div>
 
+        <!-- Skills -->
         <div class="form-group">
             <label>Computational Skills</label>
             <div id="compSkillsList"></div>
-            <button class="btn" onclick="addSkill('comp')">+ Add Skill</button>
+            <button class="btn" onclick="addList('compSkills')">+ Add Skill</button>
         </div>
 
         <div class="form-group">
             <label>Laboratory Expertise</label>
             <div id="labSkillsList"></div>
-            <button class="btn" onclick="addSkill('lab')">+ Add Expertise</button>
+            <button class="btn" onclick="addList('labSkills')">+ Add Expertise</button>
         </div>
 
+        <!-- Education -->
         <div class="form-group">
             <label>Education</label>
             <div id="eduList"></div>
             <button class="btn" onclick="addEducation()">+ Add Education</button>
+        </div>
+        
+        <!-- Training -->
+        <div class="form-group">
+            <label>Training & Certifications</label>
+            <div id="trainingList"></div>
+            <button class="btn" onclick="addList('training')">+ Add Training</button>
+        </div>
+
+        <!-- Projects -->
+        <div class="form-group">
+            <label>On-Going Projects</label>
+            <div id="projectList"></div>
+            <button class="btn" onclick="addList('projects')">+ Add Project</button>
+        </div>
+
+        <!-- Papers -->
+        <div class="form-group">
+            <label>Published Papers</label>
+            <div id="paperList"></div>
+            <button class="btn" onclick="addPaper()">+ Add Paper</button>
+        </div>
+
+        <!-- Capabilities -->
+        <div class="form-group">
+            <label>Capabilities</label>
+            <div id="capList"></div>
+            <button class="btn" onclick="addList('capabilities')">+ Add Capability</button>
+        </div>
+
+        <!-- Language -->
+        <div class="form-group">
+            <label>Language Proficiency</label>
+            <div id="langList"></div>
+            <button class="btn" onclick="addList('languages')">+ Add Language</button>
+        </div>
+
+        <!-- References -->
+        <div class="form-group">
+            <label>References</label>
+            <div id="refList"></div>
+            <button class="btn" onclick="addReference()">+ Add Reference</button>
         </div>
 
         <button class="btn" style="background-color: #10b981; font-size: 1.1em; margin-top: 20px;" onclick="window.print()">📄 Download PDF</button>
@@ -278,174 +323,309 @@
         <div class="cv-page">
             <!-- Header -->
             <div class="cv-header">
-                <div class="cv-name" id="cvName">YOUR NAME</div>
+                <div class="cv-name" id="cvName">MAHEDI HASSAN</div>
                 <div class="cv-contact">
-                    <span id="cvAddress">Address</span> | 
-                    <span id="cvPhone">Phone</span> | 
-                    <span id="cvEmail">Email</span> | 
-                    <span id="cvWeb">Website</span>
+                    <span id="cvEmail">email@example.com</span><br>
+                    <span id="cvAddress">Address</span><br>
+                    Website: <span id="cvWeb">website.com</span><br>
+                    <span id="cvPhone">+880...</span>
                 </div>
             </div>
 
             <!-- Summary -->
             <div class="cv-section">
-                <div class="cv-section-title">PROFESSIONAL SUMMARY</div>
                 <div class="cv-summary" id="cvSummary">
-                    Your professional summary will appear here. Start typing in the left panel to generate your CV instantly.
+                    Professional summary...
                 </div>
             </div>
 
             <!-- Skills (Two Columns) -->
-            <div class="cv-section">
-                <div class="cv-two-col">
-                    <div class="cv-skills">
-                        <div class="cv-section-title">COMPUTATIONAL SKILLS</div>
-                        <ul id="cvCompSkills">
-                            <li>Python</li>
-                            <li>Data Analysis</li>
-                        </ul>
-                    </div>
-                    <div class="cv-skills">
-                        <div class="cv-section-title">LABORATORY EXPERTISE</div>
-                        <ul id="cvLabSkills">
-                            <li>PCR</li>
-                            <li>Cell Culture</li>
-                        </ul>
-                    </div>
+            <div class="cv-two-col">
+                <div class="cv-skills">
+                    <div class="cv-section-title">COMPUTATIONAL SKILLS</div>
+                    <ul id="cvCompSkills"></ul>
+                </div>
+                <div class="cv-skills">
+                    <div class="cv-section-title">LABORATORY EXPERTISE</div>
+                    <ul id="cvLabSkills"></ul>
                 </div>
             </div>
 
             <!-- Education -->
             <div class="cv-section">
                 <div class="cv-section-title">EDUCATIONAL QUALIFICATION</div>
-                <div id="cvEducation">
-                    <div class="cv-edu-item">
-                        <div class="cv-edu-header">
-                            <span>B.Sc in Computer Science</span>
-                            <span>2026</span>
-                        </div>
-                        <div class="cv-edu-sub">University of Dhaka</div>
-                    </div>
-                </div>
+                <div id="cvEducation"></div>
+            </div>
+
+            <!-- Training -->
+            <div class="cv-section">
+                <div class="cv-section-title">TRAINING AND CERTIFICATION</div>
+                <ul class="cv-checklist" id="cvTraining"></ul>
+            </div>
+
+            <!-- Projects -->
+            <div class="cv-section">
+                <div class="cv-section-title">ON-GOING PROJECT</div>
+                <ul class="cv-checklist" id="cvProjects"></ul>
+            </div>
+
+            <!-- Papers -->
+            <div class="cv-section">
+                <div class="cv-section-title">PUBLISHED PAPERS</div>
+                <div id="cvPapers"></div>
+            </div>
+
+            <!-- Capabilities -->
+            <div class="cv-section">
+                <div class="cv-section-title">CAPABILITIES</div>
+                <ul class="cv-checklist" id="cvCapabilities"></ul>
+            </div>
+
+            <!-- Languages -->
+            <div class="cv-section">
+                <div class="cv-section-title">LANGUAGE PROFICIENCY</div>
+                <ul id="cvLanguages" style="font-size: 11px; padding-left: 15px; list-style-type: circle;"></ul>
+            </div>
+
+            <!-- References -->
+            <div class="cv-section">
+                <div class="cv-section-title">REFERENCES</div>
+                <div id="cvReferences"></div>
             </div>
         </div>
     </main>
 
     <script>
-        // Initial Data State
-        let compSkills = ['Python', 'JavaScript', 'HTML/CSS'];
-        let labSkills = ['Molecular Biology', 'Bioinformatics', 'PCR'];
-        let education = [
-            { degree: 'B.Sc in Computer Science', school: 'University of Science & Tech', year: '2026' },
-            { degree: 'Higher Secondary Certificate', school: 'Notre Dame College', year: '2022' }
-        ];
-
-        // Render Inputs based on state
-        function renderInputs() {
-            // Comp Skills
-            const compContainer = document.getElementById('compSkillsList');
-            compContainer.innerHTML = '';
-            compSkills.forEach((skill, index) => {
-                compContainer.innerHTML += `
-                    <div class="list-item">
-                        <button class="btn btn-danger" onclick="removeSkill('comp', ${index})">x</button>
-                        <input type="text" value="${skill}" oninput="updateSkill('comp', ${index}, this.value)" placeholder="Skill">
-                    </div>`;
-            });
-
-            // Lab Skills
-            const labContainer = document.getElementById('labSkillsList');
-            labContainer.innerHTML = '';
-            labSkills.forEach((skill, index) => {
-                labContainer.innerHTML += `
-                    <div class="list-item">
-                        <button class="btn btn-danger" onclick="removeSkill('lab', ${index})">x</button>
-                        <input type="text" value="${skill}" oninput="updateSkill('lab', ${index}, this.value)" placeholder="Expertise">
-                    </div>`;
-            });
-
-            // Education
-            const eduContainer = document.getElementById('eduList');
-            eduContainer.innerHTML = '';
-            education.forEach((edu, index) => {
-                eduContainer.innerHTML += `
-                    <div class="list-item">
-                        <button class="btn btn-danger" onclick="removeEducation(${index})">x</button>
-                        <input type="text" value="${edu.degree}" oninput="updateEdu(${index}, 'degree', this.value)" placeholder="Degree">
-                        <input type="text" value="${edu.school}" oninput="updateEdu(${index}, 'school', this.value)" placeholder="Institute">
-                        <input type="text" value="${edu.year}" oninput="updateEdu(${index}, 'year', this.value)" placeholder="Year">
-                    </div>`;
-            });
-        }
-
-        // Update Live Preview
-        function updateCV() {
-            document.getElementById('cvName').innerText = document.getElementById('name').value || 'YOUR NAME';
-            document.getElementById('cvAddress').innerText = document.getElementById('address').value || 'Address';
-            document.getElementById('cvPhone').innerText = document.getElementById('phone').value || 'Phone';
-            document.getElementById('cvEmail').innerText = document.getElementById('email').value || 'Email';
-            document.getElementById('cvWeb').innerText = document.getElementById('web').value || 'Website';
+        // --- Initial Data (Pre-filled with Mahedi's Info) ---
+        let data = {
+            name: "MAHEDI HASSAN",
+            email: "biomahedihassan@gmail.com",
+            address: "Telipara, Bason, Chandona-1702, Gazipur, Bangladesh",
+            web: "https://mahedihassanazan.github.io/edu/",
+            phone: "+8801575780459",
+            summary: "An essential factor in achieving excellence in the pharmaceutical industry is developing a skilled, detail-oriented workforce committed to maintaining quality and compliance. I possess a strong foundation in laboratory practices and analytical techniques, supported by good proficiency in computer applications for data recording, analysis, and documentation. I am experienced in handling laboratory data systematically, preparing reagents and solutions, and maintaining accurate records in line with Good Laboratory Practice (GLP). This combination of technical understanding and an organized workflow enables me to contribute effectively to quality control operations in a structured, compliance-driven environment.",
             
-            document.getElementById('cvSummary').innerText = document.getElementById('summary').value || 'Summary text...';
+            compSkills: ["Linux", "Biopython", "Pymol", "Autodock Vina", "C-Docker", "Gromacs", "Amber", "HTML", "Origin Pro", "MS Office"],
+            labSkills: ["Cell-Culture", "PCR", "Site-Directed Mutagenesis", "Cloning", "Phase Solubility", "Spectroscopy", "ELISA", "Automated Biochemistry Analyzer", "Microscopy & Imaging"],
+            
+            education: [
+                { degree: "Bachelor's of Biochemistry and Molecular Biology", school: "Gono Bishwabiddalay (2017-2021)", concentration: "Concentration: Biochemistry", result: "Results: 3.71 out of 4.0" },
+                { degree: "Diploma In Laboratory Technology (Higher Secondary)", school: "Chandana Institute of Medical Technology (2012-2016)", concentration: "Concentration: Laboratory Medicine", result: "Results: 3.81 out of 4.0" },
+                { degree: "Secondary School Certificate (SSC)", school: "M E H Arif College, Gazipur, Dhaka, Bangladesh (2006-2012)", concentration: "Concentration: Science", result: "Results: 4.44 out of 5.0" }
+            ],
 
-            // Update Skills Preview
-            document.getElementById('cvCompSkills').innerHTML = compSkills.map(s => `<li>${s}</li>`).join('');
-            document.getElementById('cvLabSkills').innerHTML = labSkills.map(s => `<li>${s}</li>`).join('');
+            training: ["Biosafety & Biosecurity (BSL-II) – (ICDDRB).", "Bioinformatics & Drug Design Trainee (CADD).", "Certified Computer Office Application (BTEB).", "Student Research Ambassador (NSRI).", "Advanced English Speaker (B2 Level) (British Council).", "WHO Certification – Medication Safety for NTDs.", "Medical Campaign Organizer (BGMI).", "In-Plant Training (Gonoshasthaya Pharmaceuticals Limited).", "Field Training (6 months) (Shaheed Tajuddin Ahmad Medical College & Hospital)."],
+            
+            projects: ["In-Silico and In-Vitro studies on the inclusion complexation of Methaxalone derivatives with beta-cyclodextrins: Exploring the potential of Methaxalone as an anticancer drug.", "Surface-Modified Gold Nanoparticles in Immunosensor Technology: A Study on Binding Affinity and Signal Enhancement.", "Molecular Docking and Simulation Automation Project."],
+            
+            papers: [
+                { title: "Effects of supplementing layers with varying levels of alfalfa and moringa fresh leaves on egg production and quality.", link: "https://doi.org/10.34104/ajpab.023.01240130" },
+                { title: "Identification, pathogenicity, public health, and economic importance of tapeworms in poultry.", link: "https://doi.org/10.34104/ijavs.024.012026" }
+            ],
 
-            // Update Education Preview
-            const eduHTML = education.map(e => `
+            capabilities: ["Adaptable to diverse environments with a strong work ethic.", "Effective at building relationships across all levels.", "Able to work efficiently under challenging conditions.", "Demonstrates leadership capability.", "Strong team player with collaborative skills."],
+            
+            languages: ["English: Proficient", "Bangla: Native", "Hindi: Conversational"],
+
+            references: [
+                { name: "Dr. Shyam Sundar Shaha", title: "Associate Professor, Department of Biochemistry & Molecular Biology, Gono Bishwabidyalay, Savar, Dhaka-1344, Bangladesh", contact: "+8801683-320497", email: "sshaha79@yahoo.com" },
+                { name: "Dr. Fuad Hossain", title: "Associate Professor and Head, Department of Biochemistry & Molecular Biology, Gono Bishwabidyalay, Savar, Dhaka-1344, Bangladesh.", contact: "+8801979864011", email: "head.bmb@gonouniversity.edu.bd" }
+            ]
+        };
+
+        // --- Initialization ---
+        window.onload = function() {
+            // Populate Inputs
+            document.getElementById('name').value = data.name;
+            document.getElementById('email').value = data.email;
+            document.getElementById('address').value = data.address;
+            document.getElementById('web').value = data.web;
+            document.getElementById('phone').value = data.phone;
+            document.getElementById('summary').value = data.summary;
+
+            renderAllInputs();
+            updateCV();
+        };
+
+        // --- Core Functions ---
+        function updateCV() {
+            // Update Basic Text
+            data.name = document.getElementById('name').value;
+            data.email = document.getElementById('email').value;
+            data.address = document.getElementById('address').value;
+            data.web = document.getElementById('web').value;
+            data.phone = document.getElementById('phone').value;
+            data.summary = document.getElementById('summary').value;
+
+            document.getElementById('cvName').innerText = data.name || "NAME";
+            document.getElementById('cvEmail').innerText = data.email || "Email";
+            document.getElementById('cvAddress').innerText = data.address || "Address";
+            document.getElementById('cvWeb').innerText = data.web || "Website";
+            document.getElementById('cvPhone').innerText = data.phone || "Phone";
+            document.getElementById('cvSummary').innerText = data.summary;
+
+            // Render Lists
+            renderCheckList('cvCompSkills', data.compSkills);
+            renderCheckList('cvLabSkills', data.labSkills);
+            renderCheckList('cvTraining', data.training);
+            renderCheckList('cvProjects', data.projects);
+            renderCheckList('cvCapabilities', data.capabilities);
+            
+            // Render Education
+            const eduHTML = data.education.map(e => `
                 <div class="cv-edu-item">
                     <div class="cv-edu-header">
                         <span>${e.degree}</span>
-                        <span>${e.year}</span>
                     </div>
                     <div class="cv-edu-sub">${e.school}</div>
+                    <div>${e.concentration}</div>
+                    <div>${e.result}</div>
                 </div>
             `).join('');
             document.getElementById('cvEducation').innerHTML = eduHTML;
+
+            // Render Papers
+            const paperHTML = data.papers.map(p => `
+                <div class="cv-paper">
+                    ✓ ${p.title} <br>
+                    <a href="${p.link}" target="_blank">${p.link}</a>
+                </div>
+            `).join('');
+            document.getElementById('cvPapers').innerHTML = paperHTML;
+
+            // Render Languages
+            document.getElementById('cvLanguages').innerHTML = data.languages.map(l => `<li>${l}</li>`).join('');
+
+            // Render References
+            const refHTML = data.references.map(r => `
+                <div class="cv-ref-block">
+                    <div class="cv-ref-name">${r.name}</div>
+                    <div>${r.title}</div>
+                    <div>Contact: ${r.contact}</div>
+                    <div>Email: ${r.email}</div>
+                </div>
+            `).join('');
+            document.getElementById('cvReferences').innerHTML = refHTML;
         }
 
-        // Logic Functions
-        function addSkill(type) {
-            if(type === 'comp') compSkills.push('');
-            else labSkills.push('');
-            renderInputs();
+        function renderCheckList(elementId, array) {
+            document.getElementById(elementId).innerHTML = array.map(item => `<li>${item}</li>`).join('');
+        }
+
+        // --- Render Inputs ---
+        function renderAllInputs() {
+            renderListInputs('compSkillsList', 'compSkills');
+            renderListInputs('labSkillsList', 'labSkills');
+            renderEduInputs();
+            renderListInputs('trainingList', 'training');
+            renderListInputs('projectList', 'projects');
+            renderPaperInputs();
+            renderListInputs('capList', 'capabilities');
+            renderListInputs('langList', 'languages');
+            renderRefInputs();
+        }
+
+        function renderListInputs(containerId, key) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            data[key].forEach((item, index) => {
+                container.innerHTML += `
+                    <div class="list-item">
+                        <button class="btn-danger" onclick="removeItem('${key}', ${index})">×</button>
+                        <input type="text" value="${item}" oninput="updateItem('${key}', ${index}, this.value)">
+                    </div>`;
+            });
+        }
+
+        function renderEduInputs() {
+            const container = document.getElementById('eduList');
+            container.innerHTML = '';
+            data.education.forEach((edu, index) => {
+                container.innerHTML += `
+                    <div class="list-item">
+                        <button class="btn-danger" onclick="data.education.splice(${index}, 1); renderEduInputs(); updateCV();">×</button>
+                        <input type="text" value="${edu.degree}" placeholder="Degree" oninput="updateEduField(${index}, 'degree', this.value)">
+                        <input type="text" value="${edu.school}" placeholder="School & Year" oninput="updateEduField(${index}, 'school', this.value)">
+                        <input type="text" value="${edu.concentration}" placeholder="Concentration" oninput="updateEduField(${index}, 'concentration', this.value)">
+                        <input type="text" value="${edu.result}" placeholder="Result" oninput="updateEduField(${index}, 'result', this.value)">
+                    </div>`;
+            });
+        }
+
+        function renderPaperInputs() {
+            const container = document.getElementById('paperList');
+            container.innerHTML = '';
+            data.papers.forEach((p, index) => {
+                container.innerHTML += `
+                    <div class="list-item">
+                        <button class="btn-danger" onclick="data.papers.splice(${index}, 1); renderPaperInputs(); updateCV();">×</button>
+                        <input type="text" value="${p.title}" placeholder="Paper Title" oninput="updatePaperField(${index}, 'title', this.value)">
+                        <input type="text" value="${p.link}" placeholder="DOI/Link" oninput="updatePaperField(${index}, 'link', this.value)">
+                    </div>`;
+            });
+        }
+
+        function renderRefInputs() {
+            const container = document.getElementById('refList');
+            container.innerHTML = '';
+            data.references.forEach((r, index) => {
+                container.innerHTML += `
+                    <div class="list-item" style="border-left: 3px solid var(--primary-color);">
+                        <button class="btn-danger" onclick="data.references.splice(${index}, 1); renderRefInputs(); updateCV();">×</button>
+                        <input type="text" value="${r.name}" placeholder="Name" oninput="updateRefField(${index}, 'name', this.value)">
+                        <input type="text" value="${r.title}" placeholder="Title & Dept" oninput="updateRefField(${index}, 'title', this.value)">
+                        <input type="text" value="${r.contact}" placeholder="Contact" oninput="updateRefField(${index}, 'contact', this.value)">
+                        <input type="text" value="${r.email}" placeholder="Email" oninput="updateRefField(${index}, 'email', this.value)">
+                    </div>`;
+            });
+        }
+
+        // --- Modifiers ---
+        function addList(key) {
+            data[key].push("");
+            renderAllInputs();
             updateCV();
         }
-
-        function removeSkill(type, index) {
-            if(type === 'comp') compSkills.splice(index, 1);
-            else labSkills.splice(index, 1);
-            renderInputs();
+        function removeItem(key, index) {
+            data[key].splice(index, 1);
+            renderAllInputs();
             updateCV();
         }
-
-        function updateSkill(type, index, value) {
-            if(type === 'comp') compSkills[index] = value;
-            else labSkills[index] = value;
+        function updateItem(key, index, val) {
+            data[key][index] = val;
             updateCV();
         }
 
         function addEducation() {
-            education.push({ degree: '', school: '', year: '' });
-            renderInputs();
+            data.education.push({ degree: '', school: '', concentration: '', result: '' });
+            renderAllInputs();
+            updateCV();
+        }
+        function updateEduField(index, field, val) {
+            data.education[index][field] = val;
             updateCV();
         }
 
-        function removeEducation(index) {
-            education.splice(index, 1);
-            renderInputs();
+        function addPaper() {
+            data.papers.push({ title: '', link: '' });
+            renderAllInputs();
+            updateCV();
+        }
+        function updatePaperField(index, field, val) {
+            data.papers[index][field] = val;
             updateCV();
         }
 
-        function updateEdu(index, field, value) {
-            education[index][field] = value;
+        function addReference() {
+            data.references.push({ name: '', title: '', contact: '', email: '' });
+            renderAllInputs();
+            updateCV();
+        }
+        function updateRefField(index, field, val) {
+            data.references[index][field] = val;
             updateCV();
         }
 
-        // Initialize
-        renderInputs();
-        updateCV();
     </script>
 </body>
 </html>

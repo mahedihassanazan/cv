@@ -71,6 +71,15 @@
             box-shadow: 0 0 10px rgba(0,0,0,0.3); font-family: 'Times New Roman', Times, serif; color: #000; line-height: 1.3;
         }
         .cv-header { text-align: center; margin-bottom: 15px; }
+        
+        /* PROFILE PICTURE STYLE */
+        .profile-pic-container {
+            display: flex; justify-content: center; margin-bottom: 15px;
+        }
+        .cv-profile-pic {
+            width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid #333;
+        }
+
         .cv-name { font-size: 26px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
         .cv-contact { font-size: 11px; margin-top: 5px; line-height: 1.4; }
         .cv-section { margin-bottom: 12px; }
@@ -108,6 +117,12 @@
         
         <!-- Personal Info -->
         <div class="form-group">
+            <label>Profile Picture</label>
+            <input type="file" id="profilePicInput" accept="image/*" onchange="handleImageUpload(event)">
+            <small style="color:#666;">Upload a professional photo (will be resized automatically).</small>
+        </div>
+
+        <div class="form-group">
             <label>Full Name</label>
             <input type="text" id="name" oninput="updatePersonal()">
         </div>
@@ -141,7 +156,7 @@
         <button class="btn" style="background-color: #10b981;" onclick="window.print()">📄 Download PDF</button>
         <button class="btn" style="background-color: #2b5797;" onclick="downloadWord()">Download Word (.doc)</button>
         <small style="color:#666; display:block; margin-top:5px; font-size: 11px;">
-            * CV is auto-saved to Drive while you type.
+            * CV & Photo are auto-saved to Drive while you type.
         </small>
     </aside>
 
@@ -149,6 +164,11 @@
     <main class="preview-panel">
         <div class="cv-page">
             <div class="cv-header">
+                <!-- Profile Image Container -->
+                <div class="profile-pic-container">
+                    <img id="cvProfilePic" class="cv-profile-pic" src="" style="display: none;" alt="Profile Picture">
+                </div>
+
                 <div class="cv-name" id="cvName">MAHEDI HASSAN</div>
                 <div class="cv-contact">
                     <span id="cvEmail">email@example.com</span><br>
@@ -272,8 +292,49 @@
             document.getElementById('cvPhone').innerText = personalData.phone;
             document.getElementById('cvSummary').innerText = personalData.summary;
 
-            // Trigger Auto Save
             triggerAutoSave();
+        }
+
+        // --- IMAGE UPLOAD LOGIC ---
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Create an image to resize
+                    const img = new Image();
+                    img.onload = function() {
+                        // Resize logic for performance
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const MAX_WIDTH = 300; // Resize max width
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                        
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // Convert to Base64
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                        
+                        // Update Preview
+                        const previewImg = document.getElementById('cvProfilePic');
+                        previewImg.src = dataUrl;
+                        previewImg.style.display = 'block';
+                        
+                        // Trigger Auto Save
+                        triggerAutoSave();
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
         // --- AUTO SAVE LOGIC (DEBOUNCE) ---
@@ -296,9 +357,10 @@
 
             const fileName = `${personalData.name.replace(/\s+/g, '_')}_CV`;
             const content = document.querySelector('.cv-page').innerHTML;
+            
+            // Create Blob containing the image data
             const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
 
-            // Convert Blob to Base64
             const reader = new FileReader();
             reader.readAsDataURL(blob);
             reader.onloadend = function() {
@@ -392,7 +454,7 @@
             if (type === 'list' || type === 'education' || type === 'paper' || type === 'reference') addSection(type);
         }
         function deleteSection(index) { if(confirm("Delete?")) { cvSections.splice(index, 1); renderAll(); triggerAutoSave(); } }
-        function updateSectionTitle(index, val) { cvSections[index].title = val; renderAll(); triggerAutoSave(); } // Note: renderAll might be heavy, could optimize to only update text
+        function updateSectionTitle(index, val) { cvSections[index].title = val; renderAll(); triggerAutoSave(); } 
         function addItem(sectionIndex) {
             const sec = cvSections[sectionIndex];
             if(sec.type === 'list') sec.items.push("");

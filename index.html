@@ -30,6 +30,8 @@
             padding: 20px;
             overflow-y: auto;
             box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
         }
 
         .header-title { text-align: center; margin-bottom: 20px; color: var(--primary-color); font-weight: bold; }
@@ -119,7 +121,7 @@
         <div class="form-group">
             <label>Profile Picture</label>
             <input type="file" id="profilePicInput" accept="image/*" onchange="handleImageUpload(event)">
-            <small style="color:#666;">Upload a professional photo (will be resized automatically).</small>
+            <small style="color:#666;">Upload a professional photo (processed locally).</small>
         </div>
 
         <div class="form-group">
@@ -146,17 +148,14 @@
 
         <button class="btn btn-add" onclick="showAddSectionModal()">+ Add New Section</button>
         
-        <hr style="margin: 20px 0;">
+        <hr style="margin: 20px 0; margin-top: auto;">
         
-        <!-- Status Indicator -->
-        <div id="saveStatus" style="text-align: center; color: #666; font-size: 12px; margin-bottom: 10px;">
-            Auto-save: Idle
+        <div style="display: flex; gap: 10px;">
+            <button class="btn" style="background-color: #10b981; flex: 1;" onclick="window.print()">📄 Download PDF</button>
+            <button class="btn" style="background-color: #2b5797; flex: 1;" onclick="downloadWord()">Download Word</button>
         </div>
-
-        <button class="btn" style="background-color: #10b981;" onclick="window.print()">📄 Download PDF</button>
-        <button class="btn" style="background-color: #2b5797;" onclick="downloadWord()">Download Word (.doc)</button>
-        <small style="color:#666; display:block; margin-top:5px; font-size: 11px;">
-            * CV & Photo are auto-saved to Drive while you type.
+        <small style="color:#666; display:block; margin-top:5px; font-size: 11px; text-align: center;">
+            * All processing is done locally in your browser.
         </small>
     </aside>
 
@@ -186,9 +185,6 @@
     </main>
 
     <script>
-        // --- CONFIGURATION ---
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxq8V-8ZPSKrH4YF9K1RcjNepmpdkwzpojWhfoDmug/dev"; 
-
         // --- INITIAL DATA ---
         let personalData = {
             name: "MAHEDI HASSAN",
@@ -291,8 +287,6 @@
             document.getElementById('cvWeb').innerText = personalData.web;
             document.getElementById('cvPhone').innerText = personalData.phone;
             document.getElementById('cvSummary').innerText = personalData.summary;
-
-            triggerAutoSave();
         }
 
         // --- IMAGE UPLOAD LOGIC ---
@@ -327,62 +321,11 @@
                         const previewImg = document.getElementById('cvProfilePic');
                         previewImg.src = dataUrl;
                         previewImg.style.display = 'block';
-                        
-                        // Trigger Auto Save
-                        triggerAutoSave();
                     };
                     img.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             }
-        }
-
-        // --- AUTO SAVE LOGIC (DEBOUNCE) ---
-        let saveTimeout;
-        function triggerAutoSave() {
-            const statusDiv = document.getElementById('saveStatus');
-            statusDiv.innerText = "Typing...";
-            statusDiv.style.color = "#666";
-
-            clearTimeout(saveTimeout);
-            saveTimeout = setTimeout(() => {
-                performAutoSave();
-            }, 3000); // 3 seconds delay
-        }
-
-        function performAutoSave() {
-            const statusDiv = document.getElementById('saveStatus');
-            statusDiv.innerText = "Saving to Drive...";
-            statusDiv.style.color = "orange";
-
-            const fileName = `${personalData.name.replace(/\s+/g, '_')}_CV`;
-            const content = document.querySelector('.cv-page').innerHTML;
-            
-            // Create Blob containing the image data
-            const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
-
-            const reader = new FileReader();
-            reader.readAsDataURL(blob);
-            reader.onloadend = function() {
-                const base64data = reader.result.split(',')[1]; 
-                const payload = { fileName: fileName, fileBase64: base64data };
-
-                fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                })
-                .then(() => {
-                    statusDiv.innerText = "Saved to Drive!";
-                    statusDiv.style.color = "green";
-                })
-                .catch(err => {
-                    statusDiv.innerText = "Error Saving";
-                    statusDiv.style.color = "red";
-                    console.error(err);
-                });
-            };
         }
 
         // --- RENDERER ---
@@ -443,31 +386,31 @@
             });
         }
 
-        // --- MANIPULATION & AUTO-SAVE TRIGGER ---
+        // --- MANIPULATION ---
         function addSection(type) {
             const newId = cvSections.length > 0 ? Math.max(...cvSections.map(s => s.id)) + 1 : 1;
             const newSection = { id: newId, type: type, title: "NEW SECTION", items: type === 'education' ? [{degree:'', school:'', concentration:'', result:''}] : type === 'paper' ? [{title:'', link:''}] : type === 'reference' ? [{name:'', title:'', contact:'', email:''}] : [""] };
-            cvSections.push(newSection); renderAll(); triggerAutoSave();
+            cvSections.push(newSection); renderAll();
         }
         function showAddSectionModal() {
             const type = prompt("Type: list, education, paper, reference");
             if (type === 'list' || type === 'education' || type === 'paper' || type === 'reference') addSection(type);
         }
-        function deleteSection(index) { if(confirm("Delete?")) { cvSections.splice(index, 1); renderAll(); triggerAutoSave(); } }
-        function updateSectionTitle(index, val) { cvSections[index].title = val; renderAll(); triggerAutoSave(); } 
+        function deleteSection(index) { if(confirm("Delete?")) { cvSections.splice(index, 1); renderAll(); } }
+        function updateSectionTitle(index, val) { cvSections[index].title = val; renderAll(); } 
         function addItem(sectionIndex) {
             const sec = cvSections[sectionIndex];
             if(sec.type === 'list') sec.items.push("");
             else if(sec.type === 'education') sec.items.push({degree:'', school:'', concentration:'', result:''});
             else if(sec.type === 'paper') sec.items.push({title:'', link:''});
             else if(sec.type === 'reference') sec.items.push({name:'', title:'', contact:'', email:''});
-            renderAll(); triggerAutoSave();
+            renderAll();
         }
-        function deleteItem(sectionIndex, itemIndex) { cvSections[sectionIndex].items.splice(itemIndex, 1); renderAll(); triggerAutoSave(); }
-        function updateItem(sectionIndex, itemIndex, val) { cvSections[sectionIndex].items[itemIndex] = val; triggerAutoSave(); }
-        function updateEduField(sIdx, iIdx, field, val) { cvSections[sIdx].items[iIdx][field] = val; triggerAutoSave(); }
-        function updatePaperField(sIdx, iIdx, field, val) { cvSections[sIdx].items[iIdx][field] = val; triggerAutoSave(); }
-        function updateRefField(sIdx, iIdx, field, val) { cvSections[sIdx].items[iIdx][field] = val; triggerAutoSave(); }
+        function deleteItem(sectionIndex, itemIndex) { cvSections[sectionIndex].items.splice(itemIndex, 1); renderAll(); }
+        function updateItem(sectionIndex, itemIndex, val) { cvSections[sectionIndex].items[itemIndex] = val; }
+        function updateEduField(sIdx, iIdx, field, val) { cvSections[sIdx].items[iIdx][field] = val; }
+        function updatePaperField(sIdx, iIdx, field, val) { cvSections[sIdx].items[iIdx][field] = val; }
+        function updateRefField(sIdx, iIdx, field, val) { cvSections[sIdx].items[iIdx][field] = val; }
 
         // --- MANUAL DOWNLOAD ---
         function downloadWord() {
